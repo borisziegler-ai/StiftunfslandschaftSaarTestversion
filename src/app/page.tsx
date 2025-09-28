@@ -3,246 +3,223 @@
 import React, { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 
-// Einfache Linie in Akzentfarbe
-function Divider({ thick = 3, color = "#0096a5" }: { thick?: number; color?: string }) {
+/** —— 1) Exact colors (adjust to match your artwork 1:1) —— */
+const PALETTE = {
+  // background whites/greys
+  paperA: "#F1F1F1",
+  paperB: "#E7E7E7",
+  // main art colors
+  teal:   "#00A0A8",  // bright turquoise
+  aqua:   "#66D6D7",  // light cyan
+  petrol: "#163844",  // deep blue-green
+  sky:    "#4FA9C8",  // blue accent (optional)
+  ink:    "#000000",  // black accents/lines
+};
+
+function Divider({ thick = 3, color = PALETTE.teal }: { thick?: number; color?: string }) {
   return <div aria-hidden style={{ height: thick, width: "100%", background: color }} />;
+}
+
+/** —— 2) SVG art background (geometric “brush” composition) —— */
+function ArtBackground() {
+  return (
+    <svg
+      aria-hidden
+      className="art-bg"
+      viewBox="0 0 1600 900"
+      preserveAspectRatio="xMidYMid slice"
+    >
+      {/* Grad paper base */}
+      <defs>
+        <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%"  stopColor={PALETTE.paperA} />
+          <stop offset="60%" stopColor="#FFFFFF" />
+          <stop offset="100%" stopColor={PALETTE.paperB} />
+        </linearGradient>
+
+        {/* subtle line texture */}
+        <pattern id="hatch" width="8" height="8" patternUnits="userSpaceOnUse">
+          <path d="M0 8 L8 0" stroke="rgba(0,0,0,.05)" strokeWidth="1"/>
+        </pattern>
+
+        {/* soft blur & multiply to mimic “paint” */}
+        <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="12" />
+        </filter>
+        <filter id="softer" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="22" />
+        </filter>
+
+        {/* edge hatch mask */}
+        <mask id="edgeHatch">
+          <rect width="1600" height="900" fill="white" />
+          <g transform="translate(0,0)" opacity=".12">
+            <rect width="1600" height="900" fill="url(#hatch)" />
+          </g>
+        </mask>
+      </defs>
+
+      {/* paper background */}
+      <rect width="1600" height="900" fill="url(#paper)" />
+
+      {/* --- big teal plates (rotated rects) --- */}
+      <g opacity=".85">
+        <g transform="translate(120,120) rotate(8)">
+          <rect width="520" height="320" fill={PALETTE.teal} filter="url(#soft)" />
+          <rect x="18" y="18" width="484" height="284" fill={PALETTE.teal} opacity=".85" />
+        </g>
+        <g transform="translate(980,160) rotate(-5)">
+          <rect width="420" height="280" fill={PALETTE.aqua} filter="url(#soft)" />
+          <rect x="14" y="14" width="392" height="252" fill={PALETTE.aqua} opacity=".8" />
+        </g>
+      </g>
+
+      {/* --- petrol blocks (dense, darker) --- */}
+      <g opacity=".9">
+        <g transform="translate(760,210) rotate(2)">
+          <rect width="230" height="280" fill={PALETTE.petrol} />
+          <rect x="18" y="18" width="194" height="244" fill={PALETTE.petrol} opacity=".8" />
+        </g>
+        <g transform="translate(610,520) rotate(-3)">
+          <rect width="300" height="220" fill={PALETTE.petrol} />
+          <rect x="10" y="10" width="280" height="200" fill={PALETTE.petrol} opacity=".82" />
+        </g>
+      </g>
+
+      {/* --- icy cyan wash (broad soft shapes) --- */}
+      <g opacity=".7" filter="url(#softer)">
+        <rect x="200" y="540" width="480" height="180" fill={PALETTE.aqua} />
+        <rect x="980" y="520" width="420" height="200" fill={PALETTE.sky} opacity=".55" />
+      </g>
+
+      {/* --- thin black ink lines (graphical accents) --- */}
+      <g stroke={PALETTE.ink} strokeWidth="6" opacity=".9">
+        <line x1="140" y1="620" x2="720" y2="620" />
+      </g>
+      <g stroke={PALETTE.ink} strokeWidth="4" opacity=".7">
+        <line x1="980" y1="280" x2="1320" y2="270" />
+      </g>
+
+      {/* small square chips */}
+      <g opacity=".9">
+        <rect x="1260" y="330" width="36" height="36" fill={PALETTE.sky} />
+        <rect x="1320" y="360" width="28" height="28" fill={PALETTE.teal} />
+        <rect x="1360" y="310" width="24" height="24" fill={PALETTE.aqua} />
+      </g>
+
+      {/* hatch mask for subtle texture on top */}
+      <rect width="1600" height="900" fill="transparent" mask="url(#edgeHatch)" />
+    </svg>
+  );
 }
 
 export default function HomePage() {
   const heroRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: heroRef,
-    offset: ["start start", "end start"],
-  });
+  const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
   const yHero = useTransform(scrollYProgress, [0, 1], [0, -120]);
 
-  const categories = [
-    "BILDUNG","KULTUR","UMWELT","SOZIALES","JUGEND",
-    "SPORT","FORSCHUNG","FAMILIE","POLITIK","SAARLAND",
-  ];
-
   return (
-    <main className="page-root">
+    <main className="root">
       {/* Header */}
-      <header className="site-header">
+      <header className="hdr">
         <div className="logo">LOGO</div>
-        <nav className="site-nav">
-          <a href="/verzeichnis">Verzeichnis</a>
-          <a href="/stiftungstag">Stiftungstag</a>
-          <a href="/termine">Termine</a>
-          <a href="/austausch">Austausch</a>
-          <a href="/ueber-uns">Über uns</a>
-          <a href="#kontakt">Kontakt</a>
+        <nav className="nav">
+          <a href="/verzeichnis">VERZEICHNIS</a>
+          <a href="/stiftungstag">STIFTUNGSTAG</a>
+          <a href="/termine">TERMINE</a>
+          <a href="/austausch">AUSTAUSCH</a>
+          <a href="/ueber-uns">ÜBER UNS</a>
+          <a href="#kontakt">KONTAKT</a>
         </nav>
       </header>
 
-      {/* Platzhalter unter Header */}
       <div style={{ height: 80 }} />
 
-      {/* HERO */}
+      {/* HERO with SVG art */}
       <section ref={heroRef} className="hero">
-        {/* Hintergrund-Formen */}
-        <div className="hero-bg">
-          <div className="bg-base" />
-          <div className="shape polygon1" />
-          <div className="shape polygon2" />
-          <div className="shape rect1" />
-          <div className="line line1" />
-          <div className="line line2" />
-        </div>
-
-        {/* Inhalt */}
-        <div className="hero-content">
-          <motion.h1 style={{ y: yHero }} className="hero-title">
+        <ArtBackground />
+        <div className="heroInner">
+          <motion.h1 style={{ y: yHero }} className="title">
             Stiftungs<br />vielfalt<br />Saar
           </motion.h1>
-          <p className="hero-text">
+          <p className="sub">
             Ein gemeinsamer digitaler Auftritt – klar, schnell, wirksam. Sichtbarkeit für alle Stiftungen.
             Zugang für die Bürger. Gemeinsam geht mehr.
           </p>
-          <div className="btn-row">
-            <button className="btn btn-solid">Mehr erfahren</button>
-            <a className="btn btn-outline" href="#kontakt">Kontakt</a>
+          <div className="btns">
+            <button className="btn solid">Mehr erfahren</button>
+            <a className="btn outline" href="#kontakt">Kontakt</a>
           </div>
         </div>
       </section>
 
       <Divider />
 
-      {/* MARQUEE */}
-      <section className="marquee-wrap">
-        <div className="marquee-track">
-          {[...categories, ...categories].map((cat, i) => (
-            <span className="marquee-item" key={i}>{cat}</span>
-          ))}
-        </div>
+      {/* Simple content blocks (text only as requested) */}
+      <section className="blk">
+        <h2>Wir machen Engagement sichtbar.</h2>
+        <p>
+          Seit 2011 vernetzt Stiftungsvielfalt Saar die saarländische Stiftungslandschaft, bündelt Wissen
+          und öffnet Türen: für Projekte, Kooperationen und Akteure, die mitgestalten wollen.
+        </p>
       </section>
 
       <Divider />
 
-      {/* ABOUT */}
-      <section id="about" className="about">
-        <div className="about-left">
-          <h2 className="about-title">
-            Wir machen <span className="underline">Engagement</span> sichtbar.
-          </h2>
-          <p className="about-text">
-            Seit 2011 vernetzt Stiftungsvielfalt Saar die saarländische Stiftungslandschaft, bündelt Wissen
-            und öffnet Türen: für Projekte, Kooperationen und Akteure, die mitgestalten wollen.
-          </p>
-        </div>
-        <div className="about-right">
-          <div className="about-block" />
-        </div>
-      </section>
-
-      <Divider />
-
-      {/* FOOTER */}
-      <footer id="kontakt" className="footer">
-        <div className="footer-inner">
-          <div>
-            <p className="footer-brand">Stiftungsvielfalt Saar</p>
-            <p className="footer-note">© 2025 – Alle Rechte vorbehalten</p>
-          </div>
-          <div className="footer-addr">
-            Musterstraße 1, 66119 Saarbrücken · info@stiftungsvielfaltsaar.de
-          </div>
-        </div>
+      <footer id="kontakt" className="ftr">
+        <div>© 2025 Stiftungsvielfalt Saar</div>
+        <div>Musterstraße 1, 66119 Saarbrücken · info@stiftungsvielfaltsaar.de</div>
       </footer>
 
-      {/* Styles (styled-jsx, ohne Tailwind) */}
+      {/* —— 3) Page styles (no Tailwind) —— */}
       <style jsx global>{`
-        /* Grundlayout / Farben */
-        .page-root {
-          background: linear-gradient(135deg, #f0f0f0, #ffffff 45%, #d9d9d9);
-          color: #1f2937; /* slate-800 */
+        .root {
+          background: linear-gradient(135deg, ${PALETTE.paperA}, #ffffff 45%, ${PALETTE.paperB});
+          color: #1f2937;
           font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
         }
-
-        /* Header */
-        .site-header {
+        .hdr {
           position: fixed; inset: 0 0 auto 0; height: 80px;
           display: flex; align-items: center; justify-content: space-between;
-          padding: 0 48px;
-          background: rgba(255, 255, 255, 0.8);
-          backdrop-filter: blur(6px);
-          border-bottom: 2px solid #0096a5;
-          z-index: 50;
+          padding: 0 48px; background: rgba(255,255,255,.85); backdrop-filter: blur(6px);
+          border-bottom: 2px solid ${PALETTE.teal}; z-index: 50;
         }
-        .logo { color: #0096a5; font-weight: 800; letter-spacing: 0.02em; }
-        .site-nav { display: none; gap: 24px; text-transform: uppercase; letter-spacing: 0.14em; font-size: 13px; }
-        @media (min-width: 768px) { .site-nav { display: flex; } }
-        .site-nav a { color: #111827; text-decoration: none; }
-        .site-nav a:hover { color: #0096a5; }
+        .logo { color: ${PALETTE.teal}; font-weight: 800; letter-spacing: .02em; }
+        .nav { display: none; gap: 24px; text-transform: uppercase; letter-spacing: .14em; font-size: 13px; }
+        @media (min-width: 900px){ .nav { display: flex; } }
+        .nav a { color: #1f2937; text-decoration: none; }
+        .nav a:hover { color: ${PALETTE.teal}; }
 
-        /* Hero */
         .hero { position: relative; height: 100vh; display: flex; align-items: center; overflow: hidden; }
-        .hero-content { position: relative; width: 100%; padding: 0 48px; }
-        .hero-title {
-          line-height: 0.95; font-weight: 900; letter-spacing: -0.02em;
-          font-size: clamp(48px, 12vw, 9vw);
-          color: #1c3c4c; /* petrol */
-          margin: 0;
+        .art-bg { position: absolute; inset: 0; width: 100%; height: 100%; }
+        .heroInner { position: relative; z-index: 1; padding: 0 48px; }
+        .title {
+          margin: 0; line-height: .95; font-weight: 900; letter-spacing: -0.02em;
+          font-size: clamp(48px, 12vw, 9vw); color: ${PALETTE.petrol};
+          text-shadow: 0 2px 0 rgba(0,0,0,.05);
         }
-        .hero-text { margin-top: 24px; max-width: 720px; font-size: 18px; color: #334155; }
-        .btn-row { display: flex; gap: 16px; margin-top: 24px; }
+        .sub { margin-top: 24px; max-width: 720px; font-size: 18px; color: #334155; }
+        .btns { display: flex; gap: 16px; margin-top: 24px; }
 
         .btn {
-          display: inline-flex; align-items: center; justify-content: center;
-          height: 44px; padding: 0 24px; border-radius: 8px; cursor: pointer;
-          font-weight: 600; text-decoration: none; transition: all .2s ease-in-out;
+          display: inline-flex; align-items: center; justify-content: center; height: 44px;
+          padding: 0 24px; border-radius: 8px; cursor: pointer; font-weight: 600;
+          text-decoration: none; transition: all .2s ease-in-out;
         }
-        .btn-solid { background: #1c3c4c; color: #fff; border: 2px solid #1c3c4c; }
-        .btn-solid:hover { background: #0096a5; border-color: #0096a5; }
-        .btn-outline { background: transparent; color: #1c3c4c; border: 2px solid #1c3c4c; }
-        .btn-outline:hover { background: #1c3c4c; color: #fff; }
+        .solid  { background: ${PALETTE.petrol}; color: #fff; border: 2px solid ${PALETTE.petrol}; }
+        .solid:hover { background: ${PALETTE.teal}; border-color: ${PALETTE.teal}; }
+        .outline{ background: transparent; color: ${PALETTE.petrol}; border: 2px solid ${PALETTE.petrol}; }
+        .outline:hover{ background: ${PALETTE.petrol}; color: #fff; }
 
-        /* Hero Background Shapes */
-        .hero-bg { position: absolute; inset: 0; z-index: -1; }
-        .bg-base {
-          position: absolute; inset: 0;
-          background: linear-gradient(135deg, #f0f0f0, #ffffff 45%, #d9d9d9);
-        }
-        .shape { position: absolute; opacity: 0.7; }
-        .polygon1 {
-          top: 80px; left: 40px; width: 400px; height: 400px;
-          background: #0096a5; transform: rotate(12deg);
-          -webkit-clip-path: polygon(0 0, 100% 0, 80% 100%, 20% 100%);
-                  clip-path: polygon(0 0, 100% 0, 80% 100%, 20% 100%);
-        }
-        .polygon2 {
-          right: 0; bottom: -40px; width: 600px; height: 500px;
-          background: #63d4d6; opacity: 0.6; transform: rotate(-6deg);
-          -webkit-clip-path: polygon(0 0, 100% 0, 80% 100%, 20% 100%);
-                  clip-path: polygon(0 0, 100% 0, 80% 100%, 20% 100%);
-        }
-        .rect1 {
-          top: 33%; right: 80px; width: 350px; height: 350px;
-          background: #1c3c4c; transform: rotate(3deg);
-          -webkit-clip-path: inset(10% 15% 5% 10%);
-                  clip-path: inset(10% 15% 5% 10%);
-        }
-        .line {
-          position: absolute; background: #000;
-        }
-        .line1 { bottom: 40px; left: 25%; width: 500px; height: 6px; opacity: 0.8; }
-        .line2 { top: 25%; right: 33%; width: 300px; height: 4px; opacity: 0.6; transform: rotate(6deg); }
+        .blk { padding: 64px 48px; max-width: 1100px; margin: 0 auto; }
+        .blk h2 { font-size: clamp(32px, 5vw, 56px); color: ${PALETTE.petrol}; margin: 0 0 12px; }
+        .blk p  { font-size: 18px; color: #334155; margin: 0; }
 
-        /* Marquee */
-        .marquee-wrap {
-          background: linear-gradient(90deg, rgba(0,150,165,0.1), #fff, rgba(99,212,214,0.1));
-          overflow: hidden;
-        }
-        .marquee-track {
-          display: flex; gap: 40px; padding: 20px 0; color: #1c3c4c; font-weight: 600;
-          animation: marquee 24s linear infinite;
-          will-change: transform;
-        }
-        .marquee-item { margin: 0 20px; white-space: nowrap; letter-spacing: .15em; }
-
-        @keyframes marquee {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-
-        /* About */
-        .about {
-          display: grid; grid-template-columns: 1fr; min-height: 70vh; overflow: hidden;
-        }
-        @media (min-width: 900px) {
-          .about { grid-template-columns: 1.2fr 0.8fr; }
-        }
-        .about-left { display: flex; align-items: center; padding: 64px 48px; }
-        .about-title {
-          font-size: clamp(36px, 5vw, 56px);
-          line-height: 1.05; font-weight: 700; color: #1c3c4c; margin: 0;
-        }
-        .underline { text-decoration: underline; text-decoration-color: #0096a5; }
-        .about-text { margin-top: 24px; max-width: 720px; font-size: 18px; color: #334155; }
-        .about-right {
-          display: flex; align-items: center; justify-content: center;
-          border-left: 4px solid #0096a5;
-        }
-        .about-block {
-          width: 70%; height: 70%; background: rgba(99,212,214,0.3);
-          -webkit-clip-path: inset(10% 15% 5% 10%);
-                  clip-path: inset(10% 15% 5% 10%);
-        }
-
-        /* Footer */
-        .footer { background: #1c3c4c; color: #d1d5db; }
-        .footer-inner {
-          display: grid; grid-template-columns: 1fr; gap: 16px;
-          padding: 48px 48px; align-items: end;
-        }
-        @media (min-width: 900px) {
-          .footer-inner { grid-template-columns: 1fr 1fr; }
-        }
-        .footer-brand { color: #63d4d6; font-weight: 800; margin-bottom: 8px; }
-        .footer-note, .footer-addr { font-size: 14px; }
-        .footer-addr { text-align: left; }
-        @media (min-width: 900px) { .footer-addr { text-align: right; } }
+        .ftr { display: grid; grid-template-columns: 1fr; gap: 10px; padding: 40px 48px;
+               background: ${PALETTE.petrol}; color: #d1d5db; }
+        @media (min-width: 900px){ .ftr { grid-template-columns: 1fr 1fr; } }
+        .ftr div:last-child { text-align: left; }
+        @media (min-width: 900px){ .ftr div:last-child { text-align: right; } }
       `}</style>
     </main>
   );
