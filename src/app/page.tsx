@@ -1,290 +1,232 @@
+Hauptseite umgedrehte boxen
+
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import { Button } from "@/components/ui/button";
 import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
 
-/** ================== Farbpalette (aus deinem Bild) ================== */
-const PAL = {
-  paperA: "#EDEDED",
-  paperB: "#E1E1E1",
-  ink: "#121212",
-  petrol: "#123C4C",
-  teal: "#3CC5C1",
-  aqua: "#77D7E0",
-  cyanDeep: "#1F7C98",
-  sand: "#E3DFD5",
-  graphite: "#2C2C2C",
-  shadow: "rgba(0,0,0,0.35)",
-  white: "#FFFFFF",
-};
-
-/** ========= kleine Helfer ========= */
-const clamp = (v: number, a: number, b: number) => Math.max(a, Math.min(b, v));
-const rand = (seed: number) => {
-  let s = seed >>> 0;
-  return () => ((s = (1664525 * s + 1013904223) >>> 0) / 0xffffffff);
-};
-const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
-
-/** ========= Value-Noise ========= */
-function makeValueNoise(seed = 1) {
-  const R = rand(seed);
-  const G = Array.from({ length: 512 }, () => R());
-  const hash = (x: number, y: number) =>
-    G[((x * 374761393) ^ (y * 668265263)) & 511];
-  const smooth = (t: number) => t * t * (3 - 2 * t);
-
-  return (x: number, y: number, scale = 1) => {
-    x *= scale;
-    y *= scale;
-    const xi = Math.floor(x),
-      yi = Math.floor(y);
-    const xf = x - xi,
-      yf = y - yi;
-    const v00 = hash(xi, yi);
-    const v10 = hash(xi + 1, yi);
-    const v01 = hash(xi, yi + 1);
-    const v11 = hash(xi + 1, yi + 1);
-    const ux = smooth(xf),
-      uy = smooth(yf);
-    const a = lerp(v00, v10, ux);
-    const b = lerp(v01, v11, ux);
-    return lerp(a, b, uy);
-  };
+// Sichtbare, von Tailwind unabhängige Trennlinie
+function Divider({ thick = 3 }: { thick?: number }) {
+  return (
+    <div
+      aria-hidden
+      style={{ height: thick, background: "#000", width: "100%" }}
+    />
+  );
 }
 
-/** ========= Pinselstriche ========= */
-function paintBrush(
-  ctx: CanvasRenderingContext2D,
-  x: number,
-  y: number,
-  w: number,
-  h: number,
-  color: string,
-  seed = 1,
-  density = 1100,
-  softness = 0.65,
-  tilt = 0
-) {
-  const R = rand(seed);
-  ctx.save();
-  ctx.translate(x + w / 2, y + h / 2);
-  ctx.rotate(tilt);
-  ctx.translate(-w / 2, -h / 2);
-
-  ctx.globalCompositeOperation = "source-over";
-  for (let i = 0; i < density; i++) {
-    const px = R() * w;
-    const py = R() * h;
-    const len = 4 + R() * 20;
-    const ang = (R() - 0.5) * Math.PI * 0.25;
-    const alpha = lerp(0.03, 0.22, Math.pow(R(), softness));
-
-    ctx.beginPath();
-    ctx.moveTo(px, py);
-    ctx.lineTo(px + Math.cos(ang) * len, py + Math.sin(ang) * len);
-    ctx.strokeStyle = color;
-    ctx.globalAlpha = alpha;
-    ctx.lineWidth = 2;
-    ctx.stroke();
-  }
-  ctx.restore();
-}
-
-/** ========= Wash ========= */
-function paintWash(
-  ctx: CanvasRenderingContext2D,
-  x: number,
-  y: number,
-  w: number,
-  h: number,
-  color: string,
-  blur = 18,
-  alpha = 0.7
-) {
-  ctx.save();
-  (ctx as unknown as { filter: string }).filter = `blur(${blur}px)`;
-  ctx.globalAlpha = alpha;
-  ctx.globalCompositeOperation = "multiply";
-  ctx.fillStyle = color;
-  ctx.fillRect(x, y, w, h);
-  (ctx as unknown as { filter: string }).filter = "none";
-  ctx.restore();
-}
-
-/** ========= Platten ========= */
-function paintPlate(
-  ctx: CanvasRenderingContext2D,
-  x: number,
-  y: number,
-  w: number,
-  h: number,
-  color: string,
-  rotationRad = 0,
-  withInnerInset = true
-) {
-  ctx.save();
-  ctx.translate(x + w / 2, y + h / 2);
-  ctx.rotate(rotationRad);
-  ctx.translate(-w / 2, -h / 2);
-
-  ctx.save();
-  (ctx as unknown as { filter: string }).filter = "blur(10px)";
-  ctx.globalAlpha = 0.45;
-  ctx.fillStyle = PAL.shadow;
-  ctx.fillRect(-6, -6, w + 12, h + 12);
-  (ctx as unknown as { filter: string }).filter = "none";
-  ctx.restore();
-
-  ctx.fillStyle = color;
-  ctx.globalAlpha = 0.95;
-  ctx.fillRect(0, 0, w, h);
-
-  if (withInnerInset) {
-    ctx.globalAlpha = 0.16;
-    ctx.fillStyle = "#000";
-    ctx.fillRect(12, 12, w - 24, h - 24);
-  }
-
-  ctx.restore();
-}
-
-/** ========= Scratches ========= */
-function paintScratches(
-  ctx: CanvasRenderingContext2D,
-  seed = 1,
-  count = 1200,
-  angle = Math.PI * 0.1,
-  width = 1,
-  light = true
-) {
-  const R = rand(seed);
-  const { width: W, height: H } = ctx.canvas;
-  ctx.save();
-  ctx.globalAlpha = 0.14;
-  ctx.strokeStyle = light
-    ? "rgba(255,255,255,0.85)"
-    : "rgba(0,0,0,0.85)";
-  ctx.lineWidth = width;
-
-  for (let i = 0; i < count; i++) {
-    const x = R() * W,
-      y = R() * H;
-    const len = 18 + R() * 36;
-    const a = angle + (R() - 0.5) * 0.3;
-    ctx.beginPath();
-    ctx.moveTo(x, y);
-    ctx.lineTo(x + Math.cos(a) * len, y + Math.sin(a) * len);
-    ctx.stroke();
-  }
-  ctx.restore();
-}
-
-/** ========= Linien ========= */
-function paintInkLine(
-  ctx: CanvasRenderingContext2D,
-  x1: number,
-  y1: number,
-  x2: number,
-  y2: number,
-  width = 6,
-  alpha = 0.9
-) {
-  ctx.save();
-  (ctx as unknown as { filter: string }).filter = "blur(1.5px)";
-  ctx.strokeStyle = PAL.ink;
-  ctx.globalAlpha = alpha;
-  ctx.lineWidth = width;
-  ctx.beginPath();
-  ctx.moveTo(x1, y1);
-  ctx.lineTo(x2, y2);
-  ctx.stroke();
-  (ctx as unknown as { filter: string }).filter = "none";
-  ctx.restore();
-}
-
-/** ========= Chips ========= */
-function paintChips(
-  ctx: CanvasRenderingContext2D,
-  items: { x: number; y: number; s: number; color: string }[]
-) {
-  ctx.save();
-  for (const c of items) {
-    ctx.fillStyle = c.color;
-    ctx.globalAlpha = 0.95;
-    ctx.fillRect(c.x, c.y, c.s, c.s);
-  }
-  ctx.restore();
-}
-
-/** ========= Artwork Renderer ========= */
-function renderArtwork(canvas: HTMLCanvasElement, seedBase = 7) {
-  const ctx = canvas.getContext("2d")!;
-  const DPR = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
-  const W = Math.floor(canvas.clientWidth * DPR);
-  const H = Math.floor(canvas.clientHeight * DPR);
-  canvas.width = W;
-  canvas.height = H;
-
-  const grad = ctx.createLinearGradient(0, 0, W, H);
-  grad.addColorStop(0, PAL.paperA);
-  grad.addColorStop(0.55, PAL.white);
-  grad.addColorStop(1, PAL.paperB);
-  ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, W, H);
-
-  paintScratches(ctx, seedBase + 11, 1400, Math.PI * 0.35, 1, true);
-  paintScratches(ctx, seedBase + 12, 1200, Math.PI * -0.1, 1, false);
-
-  paintPlate(ctx, W * 0.47, H * 0.18, W * 0.14, H * 0.34, PAL.petrol, 0.03);
-  paintPlate(ctx, W * 0.30, H * 0.60, W * 0.18, H * 0.28, PAL.graphite, -0.08);
-
-  paintInkLine(ctx, W * 0.10, H * 0.54, W * 0.92, H * 0.53, 7, 0.9);
-}
-
-/** ================== React-Komponente ================== */
 export default function HomePage() {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const heroRef = useRef<HTMLDivElement>(null);
-
   const { scrollYProgress } = useScroll({
     target: heroRef,
     offset: ["start start", "end start"],
   });
   const yHero = useTransform(scrollYProgress, [0, 1], [0, -120]);
+  const scaleHero = useTransform(scrollYProgress, [0, 1], [1, 1.05]);
 
-  useEffect(() => {
-    if (!canvasRef.current) return;
-    const cnv = canvasRef.current;
-    const draw = () => renderArtwork(cnv, 7);
-    draw();
-    const ro = new ResizeObserver(draw);
-    ro.observe(cnv);
-    window.addEventListener("resize", draw);
-    return () => {
-      ro.disconnect();
-      window.removeEventListener("resize", draw);
-    };
-  }, []);
+  // Kategorien für Marquee
+  const categories = [
+    "BILDUNG",
+    "KULTUR",
+    "UMWELT",
+    "SOZIALES",
+    "JUGEND",
+    "SPORT",
+    "FORSCHUNG",
+    "FAMILIE",
+    "POLITIK",
+    "SAARLAND",
+  ];
 
   return (
-    <main>
-      <header>
-        <div>LOGO</div>
-        <nav>
-          <a href="/verzeichnis">VERZEICHNIS</a>
-          <a href="/stiftungstag">STIFTUNGSTAG</a>
-          <a href="/termine">TERMINE</a>
-          <a href="/austausch">AUSTAUSCH</a>
-          <a href="/ueber-uns">ÜBER UNS</a>
-          <a href="#kontakt">KONTAKT</a>
+    <main style={{ background: "#fff", color: "#000" }}>
+      {/* Header */}
+      <header
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 50,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "20px 24px",
+          background: "#fff",
+          borderBottom: "3px solid #000",
+        }}
+      >
+        <div style={{ width: 112, height: 32, border: "1px solid #000" }} />
+        <nav style={{ display: "flex", gap: 32, fontSize: 14, textTransform: "uppercase" }}>
+          <a href="#about">Über uns</a>
+          <a href="#verzeichnis">Verzeichnis</a>
+          <a href="#stiftungstag">Stiftungstag</a>
+          <a href="#austausch">Austausch</a>
+          <a href="#kontakt">Kontakt</a>
         </nav>
       </header>
 
-      <section ref={heroRef}>
-        <canvas ref={canvasRef} />
-        <motion.h1 style={{ y: yHero }}>Stiftungsvielfalt Saar</motion.h1>
+      {/* Spacer unter Header */}
+      <div style={{ height: 80 }} />
+
+      {/* HERO */}
+      <section ref={heroRef} style={{ position: "relative", height: "100vh", display: "flex", alignItems: "flex-end" }}>
+        {/* Hintergrund-Wappen */}
+        <div style={{ position: "absolute", top: 0, left: 0, opacity: 0.1, pointerEvents: "none", userSelect: "none" }}>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="95 85 3000 3000"
+            width="10000"
+            height="10000"
+            fill="white"
+            stroke="black"
+            strokeWidth="30"
+          >
+            {/* svg code */}
+          </svg>
+        </div>
+
+        <motion.div style={{ scale: scaleHero }} className="absolute inset-0" />
+        <div style={{ position: "relative", width: "100%", padding: "0 24px" }}>
+          <motion.h1
+            style={{ y: yHero, lineHeight: 0.95, fontWeight: 800, fontSize: "12vw", margin: 0 }}
+          >
+            Stiftungs<br />Forum<br />Saar
+          </motion.h1>
+          <div style={{ marginTop: 24, maxWidth: 640, color: "#555", fontSize: 18 }}>
+            Ein gemeinsamer digitaler Auftritt – klar, schnell, wirksam. Sichtbarkeit für alle Stiftungen. Zugang für die Bürger. Gemeinsam geht mehr.
+          </div>
+          <div style={{ marginTop: 32, display: "flex", gap: 16 }}>
+            <Button className="bg-black text-white hover:bg-neutral-800 rounded-none px-6">Mehr erfahren</Button>
+            <Button variant="outline" className="border border-black text-black hover:bg-black hover:text-white rounded-none px-6">Kontakt</Button>
+          </div>
+        </div>
       </section>
+
+      <Divider />
+
+      {/* ÜBER UNS (Text links, Bild rechts) */}
+      <section id="about" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", minHeight: "80vh" }}>
+        <div style={{ display: "flex", alignItems: "center", padding: "64px 24px" }}>
+          <div>
+            <h2 style={{ fontSize: 48, fontWeight: 600, lineHeight: 1.1 }}>
+              Wir machen <span style={{ textDecoration: "underline" }}>Engagement</span> sichtbar.
+            </h2>
+            <p style={{ marginTop: 24, maxWidth: 600, color: "#555", fontSize: 18 }}>
+              Seit 2011 vernetzt das StiftungsForumSaar die saarländische Stiftungslandschaft, bündelt Wissen und öffnet Türen: für Projekte, Kooperationen und junge Menschen, die mitgestalten wollen.
+            </p>
+          </div>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", borderLeft: "3px solid #000" }}>
+          <div style={{ width: "75%", height: "75%", border: "3px solid #000", display: "flex", alignItems: "center", justifyContent: "center", color: "#777" }}>
+            Visual Placeholder
+          </div>
+        </div>
+      </section>
+
+      <Divider />
+
+      {/* MARQUEE */}
+      <section style={{ position: "relative", background: "#fff", overflow: "hidden" }}>
+        <div style={{ whiteSpace: "nowrap", padding: "24px 0", color: "#222" }}>
+          <div style={{ display: "flex", animation: "marquee 24s linear infinite" }}>
+            {[...categories, ...categories].map((cat, i) => (
+              <span key={i} style={{ margin: "0 40px" }}>{cat}</span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <Divider />
+
+      {/* VERZEICHNIS (Platzhalter links, Text rechts) */}
+      <section id="verzeichnis" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", minHeight: "70vh" }}>
+        {/* Platzhalter links */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", borderRight: "3px solid #000" }}>
+          <div style={{ width: "75%", height: "75%", border: "3px solid #000" }} />
+        </div>
+
+        {/* Text rechts */}
+        <div style={{ display: "flex", alignItems: "center", padding: "96px 24px" }}>
+          <div>
+            <h3 style={{ fontSize: 48, fontWeight: 600, lineHeight: 1.1 }}>Alle Stiftungen auf einen Blick.</h3>
+            <p style={{ marginTop: 24, maxWidth: 600, color: "#555", fontSize: 18 }}>
+              Alphabetisch und thematisch filterbar – schnell auffindbar nach Bereichen wie Bildung, Kultur, Soziales, Umwelt und mehr.
+              Klein oder groß: jede Stiftung ist sichtbar.
+            </p>
+            <div style={{ marginTop: 32, display: "flex", gap: 16 }}>
+              <a href="/verzeichnis" style={{ padding: "12px 24px", border: "1px solid #000", background: "#000", color: "#fff", textDecoration: "none" }}>
+                Zum Verzeichnis
+              </a>
+              <a href="#stiftungstag" style={{ padding: "12px 24px", border: "1px solid #000", color: "#000", textDecoration: "none" }}>
+                Stiftungstag
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <Divider />
+
+      {/* STIFTUNGSTAG */}
+      <section id="stiftungstag" style={{ position: "relative", height: "90vh", display: "flex", alignItems: "center" }}>
+        <div style={{ padding: "0 24px" }}>
+          <h3 style={{ fontSize: 56, fontWeight: 800, lineHeight: 0.95 }}>
+            Stiftungstag <span style={{ textDecoration: "underline" }}>Saar</span>
+          </h3>
+          <p style={{ marginTop: 24, maxWidth: 800, color: "#555", fontSize: 18 }}>
+            Termine, Inhalte, Archiv. Konzentriert auf einer Seite. Klar strukturiert, barrierefrei, mobil erstklassig. Die Bühne für Austausch und Impulse.
+          </p>
+          <div style={{ marginTop: 32 }}>
+            <Button className="rounded-none border border-black bg-black text-white hover:bg-white hover:text-black">Programm ansehen</Button>
+          </div>
+        </div>
+      </section>
+
+      <Divider />
+
+      {/* AUSTAUSCH */}
+      <section id="austausch" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", minHeight: "70vh" }}>
+        <div style={{ display: "flex", alignItems: "center", padding: "96px 24px" }}>
+          <div>
+            <h3 style={{ fontSize: 48, fontWeight: 600, lineHeight: 1.1 }}>Austausch & Vernetzung</h3>
+            <p style={{ marginTop: 24, maxWidth: 600, color: "#555", fontSize: 18 }}>
+              Ein moderierter, datenschutzkonformer Raum für Bottom-up-Themen. Alternativ: dedizierte LinkedIn-Gruppen – sichtbar integriert und leicht zugänglich.
+            </p>
+            <div style={{ marginTop: 32, display: "flex", gap: 16 }}>
+              <Button className="bg-black hover:bg-neutral-800 rounded-none text-white border border-black">Zur Plattform</Button>
+              <Button variant="outline" className="rounded-none border border-black hover:bg-black hover:text-white">LinkedIn-Gruppen</Button>
+            </div>
+          </div>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", borderLeft: "3px solid #000" }}>
+          <div style={{ width: "75%", height: "75%", border: "3px solid #000" }} />
+        </div>
+      </section>
+
+      <Divider />
+
+      {/* FOOTER */}
+      <footer id="kontakt" style={{ position: "relative" }}>
+        <div style={{ padding: "48px 24px", display: "grid", gridTemplateColumns: "1fr 1fr", alignItems: "end" }}>
+          <div>
+            <div style={{ width: 112, height: 32, border: "1px solid #000", marginBottom: 16 }} />
+            <p style={{ color: "#555", fontSize: 14 }}>© 2025 StiftungsForumSaar</p>
+          </div>
+          <div style={{ textAlign: "right", color: "#555", fontSize: 14 }}>
+            Musterstraße 1, 66119 Saarbrücken · info@stiftungsforumsaar.de
+          </div>
+        </div>
+      </footer>
+
+      {/* Keyframes */}
+      <style jsx global>{`
+        @keyframes marquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+      `}</style>
     </main>
   );
 }
