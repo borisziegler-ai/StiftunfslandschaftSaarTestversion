@@ -3,6 +3,10 @@
 import React, { useEffect, useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 
+<div style={{ background: "red", height: "200px", width: "100%" }}>
+  TEST BLOCK
+</div>
+
 /** ================== Farbpalette (aus deinem Bild) ================== */
 const PAL = {
   paperA: "#EDEDED",
