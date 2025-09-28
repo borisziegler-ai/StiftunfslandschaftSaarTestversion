@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 
-function Divider({ thick = 3, color = "#0ea5e9" }: { thick?: number; color?: string }) {
+// Divider mit Akzentfarbe
+function Divider({ thick = 3, color = "#0096a5" }: { thick?: number; color?: string }) {
   return (
     <div aria-hidden style={{ height: thick, background: color, width: "100%" }} />
   );
@@ -20,30 +21,22 @@ export default function HomePage() {
   const scaleHero = useTransform(scrollYProgress, [0, 1], [1, 1.05]);
 
   const categories = [
-    "BILDUNG",
-    "KULTUR",
-    "UMWELT",
-    "SOZIALES",
-    "JUGEND",
-    "SPORT",
-    "FORSCHUNG",
-    "FAMILIE",
-    "POLITIK",
-    "SAARLAND",
+    "BILDUNG", "KULTUR", "UMWELT", "SOZIALES", "JUGEND",
+    "SPORT", "FORSCHUNG", "FAMILIE", "POLITIK", "SAARLAND",
   ];
 
   return (
-    <main className="bg-gradient-to-br from-cyan-50 via-white to-slate-100 text-slate-900 selection:bg-cyan-500 selection:text-white">
+    <main className="bg-gradient-to-br from-[#f0f0f0] via-white to-[#d9d9d9] text-slate-900 selection:bg-[#0096a5] selection:text-white">
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-12 py-5 bg-white/80 backdrop-blur border-b border-cyan-200">
-        <div className="text-cyan-700 font-bold">LOGO</div>
+      <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-12 py-5 bg-white/80 backdrop-blur border-b border-[#0096a5]">
+        <div className="text-[#0096a5] font-bold">LOGO</div>
         <nav className="hidden md:flex items-center gap-8 text-sm tracking-widest uppercase">
-          <a className="hover:text-cyan-600" href="/verzeichnis">Verzeichnis</a>
-          <a className="hover:text-cyan-600" href="/stiftungstag">Stiftungstag</a>
-          <a className="hover:text-cyan-600" href="/termine">Termine</a>
-          <a className="hover:text-cyan-600" href="/austausch">Austausch</a>
-          <a className="hover:text-cyan-600" href="/ueber-uns">Über uns</a>
-          <a className="hover:text-cyan-600" href="#kontakt">Kontakt</a>
+          <a className="hover:text-[#0096a5]" href="/verzeichnis">Verzeichnis</a>
+          <a className="hover:text-[#0096a5]" href="/stiftungstag">Stiftungstag</a>
+          <a className="hover:text-[#0096a5]" href="/termine">Termine</a>
+          <a className="hover:text-[#0096a5]" href="/austausch">Austausch</a>
+          <a className="hover:text-[#0096a5]" href="/ueber-uns">Über uns</a>
+          <a className="hover:text-[#0096a5]" href="#kontakt">Kontakt</a>
         </nav>
       </header>
 
@@ -52,25 +45,30 @@ export default function HomePage() {
 
       {/* HERO */}
       <section ref={heroRef} className="relative h-screen flex items-center overflow-hidden">
-        {/* Abstrakte Shapes */}
-        <div className="absolute inset-0">
-          <div className="absolute -left-24 top-1/4 w-[500px] h-[500px] bg-cyan-200/40 rotate-12 blur-2xl rounded-2xl" />
-          <div className="absolute right-0 bottom-0 w-[400px] h-[400px] bg-sky-400/30 -rotate-6 blur-2xl rounded-3xl" />
+        {/* Hintergrund-Formen */}
+        <div className="absolute inset-0 -z-10">
+          <div className="absolute inset-0 bg-gradient-to-br from-[#f0f0f0] via-white to-[#d9d9d9]" />
+          <div className="absolute top-20 left-10 w-[400px] h-[400px] bg-[#0096a5] opacity-80 rotate-12 clip-polygon" />
+          <div className="absolute bottom-0 right-0 w-[600px] h-[500px] bg-[#63d4d6] opacity-60 -rotate-6 clip-polygon" />
+          <div className="absolute top-1/3 right-20 w-[350px] h-[350px] bg-[#1c3c4c] opacity-70 rotate-3 clip-rect" />
+          <div className="absolute bottom-10 left-1/4 w-[500px] h-[6px] bg-black opacity-80" />
+          <div className="absolute top-1/4 right-1/3 w-[300px] h-[4px] bg-black opacity-60 rotate-6" />
         </div>
 
-        <div className="relative w-full px-6 md:px-12">
+        {/* Inhalt */}
+        <div className="relative w-full px-6 md:px-12 text-slate-900">
           <motion.h1
             style={{ y: yHero }}
-            className="leading-[0.95] font-extrabold text-[12vw] md:text-[9vw] tracking-tight text-cyan-800"
+            className="leading-[0.95] font-extrabold text-[12vw] md:text-[9vw] tracking-tight text-[#1c3c4c]"
           >
             Stiftungs<br />vielfalt<br />Saar
           </motion.h1>
-          <p className="mt-6 md:mt-10 max-w-2xl text-slate-700 text-base md:text-lg">
+          <p className="mt-6 md:mt-10 max-w-2xl text-lg text-slate-700">
             Ein gemeinsamer digitaler Auftritt – klar, schnell, wirksam. Sichtbarkeit für alle Stiftungen. Zugang für die Bürger. Gemeinsam geht mehr.
           </p>
           <div className="mt-8 flex gap-4">
-            <Button className="bg-cyan-600 text-white hover:bg-cyan-700 rounded-lg px-6">Mehr erfahren</Button>
-            <Button variant="outline" className="border border-cyan-600 text-cyan-700 hover:bg-cyan-600 hover:text-white rounded-lg px-6">Kontakt</Button>
+            <Button className="bg-[#1c3c4c] text-white hover:bg-[#0096a5] px-6">Mehr erfahren</Button>
+            <Button variant="outline" className="border border-[#1c3c4c] text-[#1c3c4c] hover:bg-[#1c3c4c] hover:text-white px-6">Kontakt</Button>
           </div>
         </div>
       </section>
@@ -78,8 +76,8 @@ export default function HomePage() {
       <Divider />
 
       {/* MARQUEE */}
-      <section className="relative bg-gradient-to-r from-cyan-100 via-white to-cyan-50 overflow-hidden">
-        <div className="whitespace-nowrap py-6 text-cyan-800 font-semibold">
+      <section className="relative bg-gradient-to-r from-[#0096a5]/10 via-white to-[#63d4d6]/10 overflow-hidden">
+        <div className="whitespace-nowrap py-6 text-[#1c3c4c] font-semibold">
           <div className="animate-[marquee_24s_linear_infinite] flex">
             {[...categories, ...categories].map((cat, i) => (
               <span key={i} className="mx-10">{cat}</span>
@@ -90,25 +88,24 @@ export default function HomePage() {
 
       <Divider />
 
-      {/* FOOTER */}
-      <footer id="kontakt" className="relative bg-slate-900 text-slate-300">
-        <div className="px-6 md:px-12 py-12 grid md:grid-cols-2 items-end">
+      {/* ABOUT */}
+      <section id="about" className="relative min-h-[70vh] grid md:grid-cols-2 overflow-hidden">
+        <div className="flex items-center px-6 md:px-12 py-16 relative z-10">
           <div>
-            <p className="font-bold text-cyan-400 mb-2">Stiftungsvielfalt Saar</p>
-            <p className="text-sm">© 2025 – Alle Rechte vorbehalten</p>
-          </div>
-          <div className="md:text-right text-sm">
-            Musterstraße 1, 66119 Saarbrücken · info@stiftungsvielfaltsaar.de
+            <h2 className="text-5xl md:text-6xl font-semibold leading-[1.05] text-[#1c3c4c]">
+              Wir machen <span className="underline decoration-[#0096a5]">Engagement</span> sichtbar.
+            </h2>
+            <p className="mt-6 text-slate-700 max-w-xl text-lg">
+              Seit 2011 vernetzt Stiftungsvielfalt Saar die saarländische Stiftungslandschaft, bündelt Wissen und öffnet Türen: für Projekte, Kooperationen und Akteure, die mitgestalten wollen.
+            </p>
           </div>
         </div>
-      </footer>
+        <div className="relative flex items-center justify-center border-l-4 border-[#0096a5]">
+          <div className="w-[70%] h-[70%] bg-[#63d4d6]/30 clip-rect" />
+        </div>
+      </section>
 
-      <style jsx global>{`
-        @keyframes marquee {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-      `}</style>
-    </main>
-  );
-}
+      <Divider />
+
+      {/* FOOTER */}
+      <footer id="kontakt" className="rel
