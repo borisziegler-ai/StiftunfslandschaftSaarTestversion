@@ -39,11 +39,11 @@ export default function HomePage() {
         <div className="w-[112px] h-[32px] border border-black" />
         <nav className="hidden md:flex items-center gap-8 text-sm tracking-widest uppercase">
           <a href="/verzeichnis" className="hover:text-neutral-500">Verzeichnis</a>
-          <a href="/stiftungstag" className="hover:text-neutral-500">Stiftungstag</a>
           <a href="/termine" className="hover:text-neutral-500">Termine</a>
+          <a href="/stiftungstag" className="hover:text-neutral-500">Stiftungstag</a>
           <a href="#austausch" className="hover:text-neutral-500">Austausch</a>
-          <a href="/ueber-uns" className="hover:text-neutral-500">Über uns</a>
-          <a href="/rechtliches" className="hover:text-neutral-500">Rechtliches</a>
+          <a href="/rechtliches" className="hover:text-neutral-500">Stiftungsrecht</a>
+          <a href="/stiftung-gruenden" className="hover:text-neutral-500">Stiftung gründen</a>
           <a href="#kontakt" className="hover:text-neutral-500">Kontakt</a>
         </nav>
       </header>
@@ -73,7 +73,7 @@ export default function HomePage() {
             style={{ y: yHero }}
             className="leading-[0.95] font-extrabold text-[12vw] md:text-[9vw] tracking-tight text-left"
           >
-            Stiftungs<br />Forum<br />Saar
+            Saarländische<br />Stiftungen
           </motion.h1>
           <div className="mt-6 md:mt-10 max-w-2xl text-neutral-700 text-base md:text-lg">
             Ein gemeinsamer digitaler Auftritt – klar, schnell, wirksam. Sichtbarkeit für alle Stiftungen. Zugang für die Bürger. Gemeinsam geht mehr.
@@ -161,7 +161,6 @@ export default function HomePage() {
             Die Bühne für Austausch und Impulse.
           </p>
           <div className="mt-8">
-            {/* Jetzt zur Stiftungstag-Unterseite */}
             <Link
               href="/stiftungstag"
               className="inline-block rounded-none border border-black bg-black text-white hover:bg-white hover:text-black px-6 py-3"
@@ -174,12 +173,12 @@ export default function HomePage() {
 
       <Divider />
 
-      {/* RECHTLICHES & GRÜNDUNG — GROSSER ZWEISPALTER */}
+      {/* STIFTUNGSRECHT (großer Zweispalter) */}
       <section className="grid md:grid-cols-2 min-h-[70vh]">
         <div className="flex items-center px-6 md:px-12 py-24">
           <div>
             <h3 className="text-5xl md:text-6xl font-semibold leading-[1.05]">
-              Rechtliches & Gründung
+              Stiftungsrecht
             </h3>
             <p className="mt-6 text-neutral-700 max-w-xl text-lg">
               Tipps, Muster & Updates: von der Satzung bis zu Gesetzesänderungen – kompakt für die Praxis.
@@ -201,7 +200,7 @@ export default function HomePage() {
 
       <Divider />
 
-      {/* ZWEI KLEINE KÄSTEN: Austausch & Vernetzung + Über uns (vorletzter Block) */}
+      {/* ZWEI KLEINE KÄSTEN: Austausch & Vernetzung + StiftungsForum */}
       <section id="austausch" className="px-6 md:px-12 py-16">
         <div className="grid md:grid-cols-2 gap-6">
           {/* Austausch & Vernetzung KLEIN */}
@@ -214,7 +213,6 @@ export default function HomePage() {
               <Button className="bg-black hover:bg-neutral-800 rounded-none text-white border border-black">
                 Zur Plattform
               </Button>
-              {/* Termine-Button wieder daneben */}
               <Link
                 href="/termine"
                 className="inline-block px-5 py-3 border-2 border-black hover:bg-black hover:text-white"
@@ -224,9 +222,9 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Über uns KLEIN */}
+          {/* StiftungsForum (statt „Über uns“) */}
           <div className="border-[3px] border-black p-6">
-            <h4 className="text-2xl md:text-3xl font-semibold">Über uns</h4>
+            <h4 className="text-2xl md:text-3xl font-semibold">StiftungsForum</h4>
             <p className="mt-3 text-neutral-700">
               Wer wir sind, wofür wir stehen und wie wir vernetzen.
             </p>
@@ -244,7 +242,27 @@ export default function HomePage() {
 
       <Divider />
 
-      {/* Kontakt-CTA (letzter inhaltlicher Block vor Footer) */}
+      {/* STIFTUNG GRÜNDEN – KLEINER KASTEN (optional, Teaser) */}
+      <section className="px-6 md:px-12 py-8">
+        <div className="border-[3px] border-black p-6 max-w-4xl">
+          <h4 className="text-2xl md:text-3xl font-semibold">Stiftung gründen</h4>
+          <p className="mt-3 text-neutral-700">
+            Von der Idee bis zur Anerkennung: Satzung, Kapital, Zweck – kompakt erklärt.
+          </p>
+          <div className="mt-6">
+            <Link
+              href="/stiftung-gruenden"
+              className="inline-block px-5 py-3 border-2 border-black bg-black text-white hover:bg-white hover:text-black"
+            >
+              Zur Gründungsseite
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <Divider />
+
+      {/* Kontakt-CTA */}
       <section className="px-6 md:px-12 py-10">
         <p className="text-center text-neutral-700">
           <span className="font-medium">Sie haben Fragen?</span> Wir sind jederzeit für Sie da.
