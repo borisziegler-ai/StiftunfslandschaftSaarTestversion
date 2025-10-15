@@ -1,174 +1,402 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
+import { useMemo, useState } from "react";
 
-// Simulierte FAQ-Daten
-const faqRecht = [
+/** ---------- Typen ---------- */
+type Thema =
+  | "Stiftung & Recht"
+  | "Gemeinnützige Stiftungen"
+  | "Stiftung & Steuern"
+  | "Stiftungsverwaltung"
+  | "Gestaltungshinweis"
+  | "Stiftungsvermögen";
+
+type Kategorie =
+  | "Musterformulierungen"
+  | "Checklisten"
+  | "Sonderausgaben"
+  | "Musterverträge und -schreiben";
+
+type UpdateItem = {
+  id: string;
+  date: string; // ISO „YYYY-MM-DD“
+  thema: Thema;
+  kategorie: Kategorie; // (vorher „Art“) – wording geändert
+  title: string;
+  excerpt: string;
+  href: string;
+};
+
+type NewsItem = {
+  id: string;
+  date: string; // ISO
+  title: string;
+  content: string;
+};
+
+/** ---------- Daten (Beispiel) ---------- */
+
+// Aktuelles (NEU): aufklappbar
+const NEWS: NewsItem[] = [
   {
-    frage: "Wie gründet man eine Stiftung im Saarland?",
-    antwort:
-      "Eine Stiftung kann sowohl zu Lebzeiten als auch von Todes wegen gegründet werden. Sie benötigt eine Satzung, einen Stiftungszweck und ein Stiftungskapital. Die Anerkennung erfolgt über die Stiftungsaufsicht des Saarlandes.",
+    id: "n1",
+    date: "2025-10-01",
+    title: "Stiftungsregister wird wohl auf 2028 verschoben",
+    content:
+      "Nach jüngsten Abstimmungen auf Bundesebene zeichnet sich ab, dass die flächendeckende produktive Einführung des Stiftungsregisters nicht vor 2028 erfolgen wird. "
+      + "Für Stiftungen bedeutet das: mehr Zeit für Vorbereitungen (Satzungs-Check, Organangaben, Vertretungsregelungen). "
+      + "Bis dahin gelten die bisherigen Melde- und Nachweispflichten fort; parallel sollen Pilotprozesse ausgeweitet werden.",
   },
   {
-    frage: "Welche gesetzlichen Anforderungen gelten?",
-    antwort:
-      "Das saarländische Stiftungsgesetz orientiert sich am Bürgerlichen Gesetzbuch (§§ 80–88 BGB). Wichtig ist insbesondere die dauerhafte und nachhaltige Erfüllung des gemeinnützigen Zwecks.",
+    id: "n2",
+    date: "2025-07-15",
+    title: "Hinweis: Muster-Satzungsbausteine aktualisiert",
+    content:
+      "Die Musterformulierungen für Zweck, Vermögensbindung und Organregelungen wurden sprachlich präzisiert und an aktuelle Verwaltungspraxis angepasst.",
   },
 ];
 
-const faqSteuer = [
+const UPDATES: UpdateItem[] = [
   {
-    frage: "Wann gilt eine Stiftung als gemeinnützig?",
-    antwort:
-      "Wenn ihr Zweck der Allgemeinheit dient – z. B. Bildung, Kultur oder Soziales – und die Satzung entsprechend nach der Abgabenordnung formuliert ist.",
+    id: "u1",
+    date: "2025-03-05",
+    thema: "Stiftungsverwaltung",
+    kategorie: "Musterformulierungen",
+    title: "Satzungsbausteine: Zweck, Vermögensbindung & Organregelungen",
+    excerpt:
+      "Erprobte Formulierungen für Kernparagrafen der Stiftungssatzung – modular und praxistauglich.",
+    href: "#",
   },
   {
-    frage: "Welche steuerlichen Vorteile bestehen?",
-    antwort:
-      "Gemeinnützige Stiftungen sind in der Regel von der Körperschaft- und Gewerbesteuer befreit. Spenden an sie sind steuerlich abzugsfähig.",
+    id: "u2",
+    date: "2025-02-10",
+    thema: "Stiftung & Steuern",
+    kategorie: "Checklisten",
+    title: "Gemeinnützigkeit prüfen: Jahrescheck 2025",
+    excerpt:
+      "Checkliste: Satzungszwecke, tatsächliche Geschäftsführung, Mittelverwendung – das muss dokumentiert werden.",
+    href: "#",
+  },
+  {
+    id: "u3",
+    date: "2025-01-16",
+    thema: "Stiftung & Recht",
+    kategorie: "Sonderausgaben",
+    title: "Sonderausgabe: Stiftungsholding als Alternative zur GmbH-Holding",
+    excerpt:
+      "Wann die Stiftungsholding vorteilhaft sein kann und welche 10 Punkte Sie prüfen sollten.",
+    href: "#",
+  },
+  {
+    id: "u4",
+    date: "2024-12-16",
+    thema: "Stiftung & Recht",
+    kategorie: "Musterverträge und -schreiben",
+    title:
+      "Arbeitsvertrag für eine geringfügige Beschäftigung bis 556 € monatlich",
+    excerpt:
+      "Aktualisiertes Muster nach Anhebung von Mindestlohn und Geringfügigkeitsgrenze – sofort einsetzbar.",
+    href: "#",
+  },
+  {
+    id: "u5",
+    date: "2024-10-26",
+    thema: "Stiftung & Recht",
+    kategorie: "Sonderausgaben",
+    title: "Sonderausgabe: Die Familienstiftung",
+    excerpt:
+      "Begriff, Rechtsnatur, Gestaltungsmöglichkeiten und typische Fallstricke kompakt erläutert.",
+    href: "#",
   },
 ];
 
-const kategorien = [
-  "Alle",
-  "Recht",
-  "Steuer",
-  "Gründung",
-  "Pflichten",
-  "Förderung",
+const THEMEN: Thema[] = [
+  "Stiftung & Recht",
+  "Gemeinnützige Stiftungen",
+  "Stiftung & Steuern",
+  "Stiftungsverwaltung",
+  "Gestaltungshinweis",
+  "Stiftungsvermögen",
 ];
 
+const KATEGORIEN: Kategorie[] = [
+  "Musterformulierungen",
+  "Checklisten",
+  "Sonderausgaben",
+  "Musterverträge und -schreiben",
+];
+
+/** ---------- Seite ---------- */
 export default function RechtlichesPage() {
-  const [filter, setFilter] = useState("Alle");
+  const [selectedThema, setSelectedThema] = useState<"Alle" | Thema>("Alle");
+  const [selectedKat, setSelectedKat] =
+    useState<"Alle" | Kategorie>("Alle");
+  const [sort, setSort] = useState<"date" | "az">("date");
+  const [query, setQuery] = useState("");
+  const [showAll, setShowAll] = useState(false);
+
+  const filtered = useMemo(() => {
+    let out = [...UPDATES];
+
+    if (selectedThema !== "Alle") out = out.filter((x) => x.thema === selectedThema);
+    if (selectedKat !== "Alle") out = out.filter((x) => x.kategorie === selectedKat);
+
+    if (query.trim()) {
+      const q = query.toLowerCase();
+      out = out.filter(
+        (x) =>
+          x.title.toLowerCase().includes(q) ||
+          x.excerpt.toLowerCase().includes(q)
+      );
+    }
+
+    if (sort === "date") out.sort((a, b) => b.date.localeCompare(a.date));
+    else out.sort((a, b) => a.title.localeCompare(b.title));
+
+    return out;
+  }, [selectedThema, selectedKat, query, sort]);
+
+  const visible = showAll ? filtered : filtered.slice(0, 6);
+
+  const fDate = (iso: string) =>
+    new Date(iso).toLocaleDateString("de-DE", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
 
   return (
-    <main className="bg-white text-black min-h-screen px-6 md:px-12 py-16">
-      {/* Zurück-Link */}
-      <div className="mb-8">
+    <main className="bg-white text-black min-h-screen">
+      {/* Kopfzeile + Zurück */}
+      <header className="px-6 md:px-12 py-6 border-b-2 border-black flex items-center justify-between">
         <Link href="/" className="text-sm font-semibold hover:underline">
-          ← Zurück zur Hauptseite
+          ← Zurück zum Hauptmenü
         </Link>
-      </div>
+
+        <nav className="hidden md:flex items-center gap-6 uppercase text-sm tracking-wider">
+          <Link href="/verzeichnis" className="hover:text-neutral-500">Verzeichnis</Link>
+          <Link href="/stiftungstag" className="hover:text-neutral-500">Stiftungstag</Link>
+          <Link href="/termine" className="hover:text-neutral-500">Termine</Link>
+          <Link href="/ueber-uns" className="hover:text-neutral-500">Über uns</Link>
+        </nav>
+      </header>
 
       {/* Titel */}
-      <h1 className="text-5xl md:text-6xl font-bold mb-10">
-        Rechtliches & Stiftungsgründung
-      </h1>
-
-      {/* Einleitung */}
-      <section className="max-w-3xl mx-auto mb-16">
-        <p className="text-neutral-700 leading-relaxed mb-6">
-          Hier finden Sie zentrale Informationen, häufige Fragen und praktische
-          Hinweise rund um die Themen <strong>Stiftungsrecht</strong>,{" "}
-          <strong>Steuer</strong> und <strong>Gründung</strong>.
-        </p>
-        <p className="text-neutral-700 leading-relaxed">
-          Unsere Sammlung wird laufend ergänzt und spiegelt aktuelle
-          Entwicklungen und Gesetzesänderungen im Stiftungswesen wider.
+      <section className="px-6 md:px-12 py-10">
+        <h1 className="text-4xl md:text-6xl font-extrabold leading-[0.95]">
+          Rechtliches & Stiftungsgründung
+        </h1>
+        <p className="mt-4 text-neutral-700 max-w-3xl">
+          Tipps, Muster und aktuelle Hinweise zur Gründung und Führung einer Stiftung.
+          Hier finden Sie praxisnahe Downloads sowie Updates zu Gesetzesänderungen.
         </p>
       </section>
 
-      {/* Filter */}
-      <section className="max-w-4xl mx-auto mb-10">
-        <div className="flex flex-wrap justify-center gap-3 mb-6">
-          <div className="font-semibold text-sm uppercase tracking-wide mb-2 text-neutral-600">
-            Filtern nach Kategorie:
-          </div>
-        </div>
-        <div className="flex flex-wrap justify-center gap-3">
-          {kategorien.map((kat) => (
-            <button
-              key={kat}
-              onClick={() => setFilter(kat)}
-              className={`px-4 py-2 border-2 ${
-                filter === kat
-                  ? "bg-black text-white border-black"
-                  : "border-black text-black hover:bg-black hover:text-white"
-              }`}
-            >
-              {kat}
-            </button>
+      {/* AKTUELLES (NEU) */}
+      <section className="px-6 md:px-12 pb-4">
+        <h2 className="text-2xl font-semibold mb-4">Aktuelles</h2>
+        <div className="space-y-3">
+          {NEWS.sort((a, b) => b.date.localeCompare(a.date)).map((n) => (
+            <details key={n.id} className="border-2 border-black p-4 group open:bg-neutral-50">
+              <summary className="cursor-pointer font-semibold flex items-center justify-between">
+                <span>{n.title}</span>
+                <span className="text-xl leading-none select-none group-open:rotate-45 transition">+</span>
+              </summary>
+              <div className="text-sm text-neutral-700 mt-3">
+                <div className="mb-1 text-neutral-500">{fDate(n.date)}</div>
+                {n.content}
+              </div>
+            </details>
           ))}
         </div>
       </section>
 
-      {/* FAQ Recht */}
-      <section className="max-w-4xl mx-auto mb-16">
+      {/* Filterleiste (Suche/Sortierung) */}
+      <section className="px-6 md:px-12 pt-6">
+        <div className="mt-6 flex flex-col md:flex-row gap-4 md:items-center">
+          <input
+            className="border-2 border-black px-4 py-2 w-full md:w-96 font-semibold uppercase placeholder-neutral-400"
+            placeholder="SUCHEN…"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+          <div className="flex items-center gap-3">
+            <span className="text-sm text-neutral-600">Sortieren nach:</span>
+            <button
+              onClick={() => setSort("az")}
+              className={`px-3 py-1 border ${sort === "az" ? "border-black bg-black text-white" : "border-black hover:bg-black hover:text-white"}`}
+            >
+              A–Z
+            </button>
+            <button
+              onClick={() => setSort("date")}
+              className={`px-3 py-1 border ${sort === "date" ? "border-black bg-black text-white" : "border-black hover:bg-black hover:text-white"}`}
+            >
+              Datum
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Inhalt: Sidebar + Liste */}
+      <section className="px-6 md:px-12 pb-16 grid grid-cols-1 lg:grid-cols-12 gap-10">
+        {/* Sidebar */}
+        <aside className="lg:col-span-4 xl:col-span-3">
+          <div className="border-2 border-black p-5">
+            <h3 className="text-lg font-semibold mb-4">Filtern nach Themen</h3>
+            <div className="space-y-2">
+              <label className="flex items-center gap-3">
+                <input
+                  type="radio"
+                  name="thema"
+                  checked={selectedThema === "Alle"}
+                  onChange={() => setSelectedThema("Alle")}
+                />
+                <span>Alle</span>
+              </label>
+              {THEMEN.map((t) => (
+                <label key={t} className="flex items-center gap-3">
+                  <input
+                    type="radio"
+                    name="thema"
+                    checked={selectedThema === t}
+                    onChange={() => setSelectedThema(t)}
+                  />
+                  <span>{t}</span>
+                </label>
+              ))}
+            </div>
+
+            <div className="h-[1px] bg-neutral-300 my-6" />
+
+            <h3 className="text-lg font-semibold mb-4">Filtern nach Kategorie</h3>
+            <div className="space-y-2">
+              <label className="flex items-center gap-3">
+                <input
+                  type="radio"
+                  name="kat"
+                  checked={selectedKat === "Alle"}
+                  onChange={() => setSelectedKat("Alle")}
+                />
+                <span>Alle</span>
+              </label>
+              {KATEGORIEN.map((a) => (
+                <label key={a} className="flex items-center gap-3">
+                  <input
+                    type="radio"
+                    name="kat"
+                    checked={selectedKat === a}
+                    onChange={() => setSelectedKat(a)}
+                  />
+                  <span>{a}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+        </aside>
+
+        {/* Liste */}
+        <div className="lg:col-span-8 xl:col-span-9">
+          <div className="space-y-6">
+            {visible.map((item) => (
+              <article key={item.id} className="border-2 border-black p-5 hover:shadow-sm transition">
+                <div className="text-sm text-neutral-600">
+                  {fDate(item.date)} · {item.kategorie} ·{" "}
+                  <span className="text-neutral-700">{item.thema}</span>
+                </div>
+
+                <h2 className="text-2xl md:text-[26px] font-bold mt-2 leading-tight">
+                  <Link href={item.href} className="hover:underline">
+                    {item.title}
+                  </Link>
+                </h2>
+
+                <p className="mt-2 text-neutral-700">
+                  {item.excerpt}
+                </p>
+
+                <div className="mt-3">
+                  <Link href={item.href} className="font-semibold hover:underline">
+                    weiter →
+                  </Link>
+                </div>
+              </article>
+            ))}
+
+            {filtered.length === 0 && (
+              <div className="text-neutral-600">Keine Einträge gefunden.</div>
+            )}
+          </div>
+
+          {filtered.length > 6 && (
+            <div className="text-center mt-8">
+              <button
+                onClick={() => setShowAll((v) => !v)}
+                className="px-6 py-3 border-2 border-black bg-black text-white hover:bg-white hover:text-black"
+              >
+                {showAll ? "Weniger anzeigen" : "Weitere Beiträge anzeigen"}
+              </button>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* FAQ – Recht */}
+      <section className="px-6 md:px-12 pb-10">
         <h2 className="text-2xl font-semibold mb-6">
           Häufige Fragen zum Thema Recht
         </h2>
-        <div className="space-y-4">
-          {faqRecht.map((item, i) => (
-            <details
-              key={i}
-              className="border-2 border-black p-4 group open:bg-neutral-50"
-            >
-              <summary className="cursor-pointer font-semibold text-lg group-open:mb-2">
-                {item.frage}
+        <div className="max-w-4xl">
+          {[
+            "Welche Rechtsform ist für meine Stiftung am besten geeignet?",
+            "Wie erstelle ich die Satzung meiner Stiftung?",
+            "Welche Anforderungen gibt es bei der Anerkennung?",
+            "Kann ich als Stifter weiterhin Einfluss nehmen?",
+            "Welche Haftungsrisiken bestehen für Vorstand/Stifter:innen?",
+          ].map((q, i) => (
+            <details key={i} className="border-2 border-black p-4 group open:bg-neutral-50 mb-3">
+              <summary className="cursor-pointer font-medium text-lg">
+                {q}
               </summary>
-              <p className="text-neutral-700">{item.antwort}</p>
+              <div className="text-neutral-700 mt-2">
+                Kompakte Orientierung: rechtlicher Rahmen, typische Stolpersteine und
+                praktische Hinweise. (Hier deine Inhalte/Links einfügen.)
+              </div>
             </details>
           ))}
         </div>
       </section>
 
-      {/* FAQ Steuer */}
-      <section className="max-w-4xl mx-auto mb-16">
+      {/* FAQ – Steuer */}
+      <section className="px-6 md:px-12 pb-16">
         <h2 className="text-2xl font-semibold mb-6">
           Häufige Fragen zur Steuer
         </h2>
-        <div className="space-y-4">
-          {faqSteuer.map((item, i) => (
-            <details
-              key={i}
-              className="border-2 border-black p-4 group open:bg-neutral-50"
-            >
-              <summary className="cursor-pointer font-semibold text-lg group-open:mb-2">
-                {item.frage}
+        <div className="max-w-4xl">
+          {[
+            "Welche steuerlichen Vorteile habe ich bei einer Stiftung?",
+            "Wie wirkt sich Vermögensübertragung auf die Stiftung steuerlich aus?",
+            "Buchführung & Berichte: Was ist zu beachten?",
+            "Welche Rolle spielt die Stiftungsaufsicht?",
+          ].map((q, i) => (
+            <details key={`tax-${i}`} className="border-2 border-black p-4 group open:bg-neutral-50 mb-3">
+              <summary className="cursor-pointer font-medium text-lg">
+                {q}
               </summary>
-              <p className="text-neutral-700">{item.antwort}</p>
+              <div className="text-neutral-700 mt-2">
+                Kurz erklärt: steuerliche Rahmenbedingungen, Nachweispflichten und
+                Best Practices. (Hier deine Inhalte/Downloads verlinken.)
+              </div>
             </details>
           ))}
         </div>
       </section>
 
-      {/* Praxis-Tipps / Platzhalter */}
-      <section className="max-w-4xl mx-auto mb-16">
-        <h2 className="text-2xl font-semibold mb-6">Praxis-Tipps & Downloads</h2>
-        <div className="grid md:grid-cols-2 gap-6">
-          <div className="border-2 border-black p-6 text-center">
-            <p className="font-semibold mb-2">Mustersatzung</p>
-            <p className="text-sm text-neutral-600 mb-4">
-              Vorlage für die Gründung einer gemeinnützigen Stiftung.
-            </p>
-            <a
-              href="#"
-              className="inline-block px-4 py-2 border-2 border-black bg-black text-white hover:bg-white hover:text-black"
-            >
-              Download
-            </a>
-          </div>
-          <div className="border-2 border-black p-6 text-center">
-            <p className="font-semibold mb-2">Checkliste Gründung</p>
-            <p className="text-sm text-neutral-600 mb-4">
-              Von der Satzung bis zur Anerkennung – alle Schritte im Überblick.
-            </p>
-            <a
-              href="#"
-              className="inline-block px-4 py-2 border-2 border-black bg-black text-white hover:bg-white hover:text-black"
-            >
-              Download
-            </a>
-          </div>
-        </div>
-      </section>
-
-      {/* Kontaktbereich */}
-      <section className="px-6 md:px-12 py-10">
+      {/* Kontakt-CTA */}
+      <section className="px-6 md:px-12 pb-16">
         <div className="text-center text-neutral-700">
-          <span className="font-medium">Sie haben Fragen?</span> Wir sind
-          jederzeit für Sie da.
+          <span className="font-medium">Sie haben Fragen?</span> Wir sind jederzeit für Sie da.
         </div>
         <div className="mt-6 max-w-3xl mx-auto border-[3px] border-black p-6 text-center">
           <div className="text-lg">Kontakt</div>
