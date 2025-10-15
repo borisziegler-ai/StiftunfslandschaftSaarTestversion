@@ -2,16 +2,12 @@
 
 import { Button } from "@/components/ui/button";
 import { motion, useScroll, useTransform } from "framer-motion";
+import Link from "next/link";
 import { useRef } from "react";
 
-// Sichtbare Trennlinie
+// Trennlinie
 function Divider({ thick = 3 }: { thick?: number }) {
-  return (
-    <div
-      aria-hidden
-      style={{ height: thick, background: "#000", width: "100%" }}
-    />
-  );
+  return <div aria-hidden style={{ height: thick, background: "#000", width: "100%" }} />;
 }
 
 export default function HomePage() {
@@ -42,13 +38,13 @@ export default function HomePage() {
       <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-12 py-5 bg-white border-b-[3px] border-black">
         <div className="w-[112px] h-[32px] border border-black" />
         <nav className="hidden md:flex items-center gap-8 text-sm tracking-widest uppercase">
-          <a href="/verzeichnis" className="hover:text-neutral-500">Verzeichnis</a>
-          <a href="/stiftungstag" className="hover:text-neutral-500">Stiftungstag</a>
+          <a href="#verzeichnis" className="hover:text-neutral-500">Verzeichnis</a>
+          <a href="#stiftungstag" className="hover:text-neutral-500">Stiftungstag</a>
           <a href="/termine" className="hover:text-neutral-500">Termine</a>
           <a href="#austausch" className="hover:text-neutral-500">Austausch</a>
-          <a href="#about" className="hover:text-neutral-500">Über uns</a>
-          <a href="#kontakt" className="hover:text-neutral-500">Kontakt</a>
+          <a href="/ueber-uns" className="hover:text-neutral-500">Über uns</a>
           <a href="/rechtliches" className="hover:text-neutral-500">Rechtliches</a>
+          <a href="#kontakt" className="hover:text-neutral-500">Kontakt</a>
         </nav>
       </header>
 
@@ -57,7 +53,6 @@ export default function HomePage() {
 
       {/* HERO */}
       <section ref={heroRef} className="relative h-screen flex items-end md:items-center">
-        {/* Hintergrund-Wappen */}
         <div className="absolute top-0 left-0 opacity-10 pointer-events-none select-none">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -68,7 +63,7 @@ export default function HomePage() {
             stroke="black"
             strokeWidth="30"
           >
-            {/* Dein SVG-Code */}
+            {/* SVG optional */}
           </svg>
         </div>
 
@@ -92,7 +87,7 @@ export default function HomePage() {
 
       <Divider />
 
-      {/* ÜBER UNS */}
+      {/* ÜBER UNS (Kurz) */}
       <section id="about" className="grid md:grid-cols-2 min-h-[80vh]">
         <div className="flex items-center px-6 md:px-12 py-16">
           <div>
@@ -101,8 +96,7 @@ export default function HomePage() {
             </h2>
             <p className="mt-6 text-neutral-700 max-w-xl text-lg">
               Seit 2011 vernetzt das StiftungsForumSaar die saarländische Stiftungslandschaft,
-              bündelt Wissen und öffnet Türen: für Projekte, Kooperationen und Akteure,
-              die mitgestalten wollen.
+              bündelt Wissen und öffnet Türen: für Projekte, Kooperationen und Akteure, die mitgestalten wollen.
             </p>
           </div>
         </div>
@@ -140,9 +134,9 @@ export default function HomePage() {
               Kultur, Soziales, Umwelt und mehr. Klein oder groß: jede Stiftung ist sichtbar.
             </p>
             <div className="mt-8 flex gap-4">
-              <a href="/verzeichnis" className="px-6 py-3 border border-black bg-black text-white hover:bg-white hover:text-black">
+              <Link href="/verzeichnis" className="px-6 py-3 border border-black bg-black text-white hover:bg-white hover:text-black">
                 Zum Verzeichnis
-              </a>
+              </Link>
               <a href="#stiftungstag" className="px-6 py-3 border border-black hover:bg-black hover:text-white">
                 Stiftungstag
               </a>
@@ -167,9 +161,52 @@ export default function HomePage() {
             Die Bühne für Austausch und Impulse.
           </p>
           <div className="mt-8">
-            <Button className="rounded-none border border-black bg-black text-white hover:bg-white hover:text-black">
+            {/* Programm ansehen → Termine-Seite */}
+            <Link
+              href="/termine"
+              className="inline-block rounded-none border border-black bg-black text-white hover:bg-white hover:text-black px-6 py-3"
+            >
               Programm ansehen
-            </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <Divider />
+
+      {/* KÄSTEN: Rechtliches & Über uns */}
+      <section className="px-6 md:px-12 py-16">
+        <div className="grid md:grid-cols-2 gap-6">
+          {/* Rechtliches */}
+          <div className="border-[3px] border-black p-6">
+            <h4 className="text-2xl md:text-3xl font-semibold">Rechtliches & Gründung</h4>
+            <p className="mt-3 text-neutral-700">
+              Tipps, Muster & Updates: von der Satzung bis zu Gesetzesänderungen.
+            </p>
+            <div className="mt-6">
+              <Link
+                href="/rechtliches"
+                className="inline-block px-5 py-3 border-2 border-black bg-black text-white hover:bg-white hover:text-black"
+              >
+                Mehr erfahren
+              </Link>
+            </div>
+          </div>
+
+          {/* Über uns */}
+          <div className="border-[3px] border-black p-6">
+            <h4 className="text-2xl md:text-3xl font-semibold">Über uns</h4>
+            <p className="mt-3 text-neutral-700">
+              Wer wir sind, wofür wir stehen und wie wir vernetzen.
+            </p>
+            <div className="mt-6">
+              <Link
+                href="/ueber-uns"
+                className="inline-block px-5 py-3 border-2 border-black hover:bg-black hover:text-white"
+              >
+                Team & Geschichte
+              </Link>
+            </div>
           </div>
         </div>
       </section>
@@ -180,9 +217,7 @@ export default function HomePage() {
       <section id="austausch" className="grid md:grid-cols-2 min-h-[70vh]">
         <div className="flex items-center px-6 md:px-12 py-24">
           <div>
-            <h3 className="text-5xl md:text-6xl font-semibold leading-[1.05]">
-              Austausch & Vernetzung
-            </h3>
+            <h3 className="text-5xl md:text-6xl font-semibold leading-[1.05]">Austausch & Vernetzung</h3>
             <p className="mt-6 text-neutral-700 max-w-xl text-lg">
               Ein moderierter, datenschutzkonformer Raum für Bottom-up-Themen.
             </p>
@@ -190,12 +225,7 @@ export default function HomePage() {
               <Button className="bg-black hover:bg-neutral-800 rounded-none text-white border border-black">
                 Zur Plattform
               </Button>
-              <Button
-                variant="outline"
-                className="rounded-none border border-black hover:bg-black hover:text-white"
-              >
-                Termine
-              </Button>
+              {/* Termine-Button ENTFERNT wie gewünscht */}
             </div>
           </div>
         </div>
@@ -206,15 +236,48 @@ export default function HomePage() {
 
       <Divider />
 
+      {/* Kontakt-CTA */}
+      <section className="px-6 md:px-12 py-10">
+        <p className="text-center text-neutral-700">
+          <span className="font-medium">Sie haben Fragen?</span> Wir sind jederzeit für Sie da.
+        </p>
+        <div className="mt-6 max-w-3xl mx-auto border-[3px] border-black p-6 text-center">
+          <div className="text-lg">Kontakt</div>
+          <div className="mt-2 text-neutral-700">
+            Musterstraße 1, 66119 Saarbrücken ·{" "}
+            <a href="mailto:info@stiftungsforumsaar.de" className="underline">
+              info@stiftungsforumsaar.de
+            </a>{" "}
+            · 0681 / 123 45 67
+          </div>
+          <div className="mt-4">
+            <Link
+              href="#kontakt"
+              className="inline-block px-5 py-3 border-2 border-black hover:bg-black hover:text-white"
+            >
+              Nachricht schreiben
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <Divider />
+
       {/* FOOTER */}
       <footer id="kontakt" className="relative">
-        <div className="px-6 md:px-12 py-12 grid md:grid-cols-2 items-end">
+        <div className="px-6 md:px-12 py-12 grid md:grid-cols-2 gap-6 items-end">
           <div>
             <div className="w-[112px] h-[32px] border border-black mb-4" />
-            <p className="text-neutral-700 text-sm">© 2025 StiftungsForumSaar</p>
+            {/* Jahr geändert auf 2011 */}
+            <p className="text-neutral-700 text-sm">© 2011 StiftungsForumSaar</p>
           </div>
-          <div className="md:text-right text-neutral-700 text-sm">
-            Musterstraße 1, 66119 Saarbrücken · info@stiftungsforumsaar.de
+
+          {/* Footer-Links */}
+          <div className="md:text-right text-neutral-700 text-sm space-x-4">
+            <Link href="/rechtliches#impressum" className="underline">Impressum</Link>
+            <Link href="/rechtliches#datenschutz" className="underline">Datenschutzerklärung</Link>
+            <Link href="/rechtliches#nutzungsbedingungen" className="underline">Nutzungsbedingungen</Link>
+            <Link href="/rechtliches#cookies" className="underline">Cookie-Einstellungen</Link>
           </div>
         </div>
       </footer>
@@ -222,12 +285,8 @@ export default function HomePage() {
       {/* Keyframes */}
       <style jsx global>{`
         @keyframes marquee {
-          0% {
-            transform: translateX(0);
-          }
-          100% {
-            transform: translateX(-50%);
-          }
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
         }
       `}</style>
     </main>
