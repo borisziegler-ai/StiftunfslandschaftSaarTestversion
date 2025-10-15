@@ -33,7 +33,7 @@ export default function HomePage() {
   ];
 
   return (
-    <main className="bg-white text-black selection:bg-black selection:text-white">
+    <main className="bg-white text-black selection:bg-black selection:text-white overflow-x-hidden">
       {/* HEADER */}
       <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-12 py-5 bg-white border-b-[3px] border-black">
         <div className="w-[112px] h-[32px] border border-black" />
@@ -52,13 +52,16 @@ export default function HomePage() {
       <div className="h-20" />
 
       {/* HERO */}
-      <section ref={heroRef} className="relative h-screen flex items-end md:items-center">
-        <div className="absolute top-0 left-0 opacity-10 pointer-events-none select-none">
+      <section
+        ref={heroRef}
+        className="relative h-screen flex items-end md:items-center overflow-hidden"
+      >
+        {/* Hintergrund-Wappen sicher einkapseln */}
+        <div className="absolute inset-0 opacity-10 pointer-events-none select-none overflow-hidden">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="95 85 3000 3000"
-            width="10000"
-            height="10000"
+            className="w-[1800px] h-[1800px] md:w-[2600px] md:h-[2600px]"
             fill="white"
             stroke="black"
             strokeWidth="30"
@@ -173,7 +176,7 @@ export default function HomePage() {
 
       <Divider />
 
-      {/* STIFTUNGSRECHT (großer Zweispalter) */}
+      {/* STIFTUNGSRECHT — GROSSER ZWEISPALTER */}
       <section className="grid md:grid-cols-2 min-h-[70vh]">
         <div className="flex items-center px-6 md:px-12 py-24">
           <div>
@@ -200,7 +203,7 @@ export default function HomePage() {
 
       <Divider />
 
-      {/* ZWEI KLEINE KÄSTEN: Austausch & Vernetzung + StiftungsForum */}
+      {/* KLEINE KÄSTEN: Austausch & Vernetzung + StiftungsForum */}
       <section id="austausch" className="px-6 md:px-12 py-16">
         <div className="grid md:grid-cols-2 gap-6">
           {/* Austausch & Vernetzung KLEIN */}
@@ -242,7 +245,7 @@ export default function HomePage() {
 
       <Divider />
 
-      {/* STIFTUNG GRÜNDEN – KLEINER KASTEN (optional, Teaser) */}
+      {/* STIFTUNG GRÜNDEN – TEASER */}
       <section className="px-6 md:px-12 py-8">
         <div className="border-[3px] border-black p-6 max-w-4xl">
           <h4 className="text-2xl md:text-3xl font-semibold">Stiftung gründen</h4>
@@ -289,7 +292,7 @@ export default function HomePage() {
 
       <Divider />
 
-      {/* FOOTER */}
+      {/* FOOTER (Schluss – nichts mehr darunter) */}
       <footer id="kontakt" className="relative">
         <div className="px-6 md:px-12 py-12 grid md:grid-cols-2 gap-6 items-end">
           <div>
@@ -309,7 +312,7 @@ export default function HomePage() {
       <style jsx global>{`
         @keyframes marquee {
           0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
+        100% { transform: translateX(-50%); }
         }
       `}</style>
     </main>
