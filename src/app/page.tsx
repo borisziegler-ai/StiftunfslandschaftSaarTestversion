@@ -63,7 +63,7 @@ export default function HomePage() {
             stroke="black"
             strokeWidth="30"
           >
-            {/* SVG optional */}
+            {/* optional SVG */}
           </svg>
         </div>
 
@@ -87,7 +87,7 @@ export default function HomePage() {
 
       <Divider />
 
-      {/* ÜBER UNS (Kurz) */}
+      {/* ÜBER UNS KURZ */}
       <section id="about" className="grid md:grid-cols-2 min-h-[80vh]">
         <div className="flex items-center px-6 md:px-12 py-16">
           <div>
@@ -161,9 +161,9 @@ export default function HomePage() {
             Die Bühne für Austausch und Impulse.
           </p>
           <div className="mt-8">
-            {/* Programm ansehen → Termine-Seite */}
+            {/* Jetzt zur Stiftungstag-Unterseite */}
             <Link
-              href="/termine"
+              href="/stiftungstag"
               className="inline-block rounded-none border border-black bg-black text-white hover:bg-white hover:text-black px-6 py-3"
             >
               Programm ansehen
@@ -174,26 +174,57 @@ export default function HomePage() {
 
       <Divider />
 
-      {/* KÄSTEN: Rechtliches & Über uns */}
-      <section className="px-6 md:px-12 py-16">
-        <div className="grid md:grid-cols-2 gap-6">
-          {/* Rechtliches */}
-          <div className="border-[3px] border-black p-6">
-            <h4 className="text-2xl md:text-3xl font-semibold">Rechtliches & Gründung</h4>
-            <p className="mt-3 text-neutral-700">
-              Tipps, Muster & Updates: von der Satzung bis zu Gesetzesänderungen.
+      {/* RECHTLICHES & GRÜNDUNG — GROSSER ZWEISPALTER */}
+      <section className="grid md:grid-cols-2 min-h-[70vh]">
+        <div className="flex items-center px-6 md:px-12 py-24">
+          <div>
+            <h3 className="text-5xl md:text-6xl font-semibold leading-[1.05]">
+              Rechtliches & Gründung
+            </h3>
+            <p className="mt-6 text-neutral-700 max-w-xl text-lg">
+              Tipps, Muster & Updates: von der Satzung bis zu Gesetzesänderungen – kompakt für die Praxis.
             </p>
-            <div className="mt-6">
+            <div className="mt-8">
               <Link
                 href="/rechtliches"
-                className="inline-block px-5 py-3 border-2 border-black bg-black text-white hover:bg-white hover:text-black"
+                className="inline-block px-6 py-3 border border-black bg-black text-white hover:bg-white hover:text-black"
               >
                 Mehr erfahren
               </Link>
             </div>
           </div>
+        </div>
+        <div className="relative flex items-center justify-center border-l-[3px] border-black">
+          <div className="w-3/4 h-3/4 border-[3px] border-black" />
+        </div>
+      </section>
 
-          {/* Über uns */}
+      <Divider />
+
+      {/* ZWEI KLEINE KÄSTEN: Austausch & Vernetzung + Über uns (vorletzter Block) */}
+      <section id="austausch" className="px-6 md:px-12 py-16">
+        <div className="grid md:grid-cols-2 gap-6">
+          {/* Austausch & Vernetzung KLEIN */}
+          <div className="border-[3px] border-black p-6">
+            <h4 className="text-2xl md:text-3xl font-semibold">Austausch & Vernetzung</h4>
+            <p className="mt-3 text-neutral-700">
+              Ein moderierter, datenschutzkonformer Raum für Bottom-up-Themen.
+            </p>
+            <div className="mt-6 flex gap-3">
+              <Button className="bg-black hover:bg-neutral-800 rounded-none text-white border border-black">
+                Zur Plattform
+              </Button>
+              {/* Termine-Button wieder daneben */}
+              <Link
+                href="/termine"
+                className="inline-block px-5 py-3 border-2 border-black hover:bg-black hover:text-white"
+              >
+                Termine
+              </Link>
+            </div>
+          </div>
+
+          {/* Über uns KLEIN */}
           <div className="border-[3px] border-black p-6">
             <h4 className="text-2xl md:text-3xl font-semibold">Über uns</h4>
             <p className="mt-3 text-neutral-700">
@@ -213,30 +244,7 @@ export default function HomePage() {
 
       <Divider />
 
-      {/* AUSTAUSCH */}
-      <section id="austausch" className="grid md:grid-cols-2 min-h-[70vh]">
-        <div className="flex items-center px-6 md:px-12 py-24">
-          <div>
-            <h3 className="text-5xl md:text-6xl font-semibold leading-[1.05]">Austausch & Vernetzung</h3>
-            <p className="mt-6 text-neutral-700 max-w-xl text-lg">
-              Ein moderierter, datenschutzkonformer Raum für Bottom-up-Themen.
-            </p>
-            <div className="mt-8 flex gap-4">
-              <Button className="bg-black hover:bg-neutral-800 rounded-none text-white border border-black">
-                Zur Plattform
-              </Button>
-              {/* Termine-Button ENTFERNT wie gewünscht */}
-            </div>
-          </div>
-        </div>
-        <div className="relative flex items-center justify-center border-l-[3px] border-black">
-          <div className="w-3/4 h-3/4 border-[3px] border-black" />
-        </div>
-      </section>
-
-      <Divider />
-
-      {/* Kontakt-CTA */}
+      {/* Kontakt-CTA (letzter inhaltlicher Block vor Footer) */}
       <section className="px-6 md:px-12 py-10">
         <p className="text-center text-neutral-700">
           <span className="font-medium">Sie haben Fragen?</span> Wir sind jederzeit für Sie da.
@@ -268,11 +276,8 @@ export default function HomePage() {
         <div className="px-6 md:px-12 py-12 grid md:grid-cols-2 gap-6 items-end">
           <div>
             <div className="w-[112px] h-[32px] border border-black mb-4" />
-            {/* Jahr geändert auf 2011 */}
             <p className="text-neutral-700 text-sm">© 2011 StiftungsForumSaar</p>
           </div>
-
-          {/* Footer-Links */}
           <div className="md:text-right text-neutral-700 text-sm space-x-4">
             <Link href="/rechtliches#impressum" className="underline">Impressum</Link>
             <Link href="/rechtliches#datenschutz" className="underline">Datenschutzerklärung</Link>
