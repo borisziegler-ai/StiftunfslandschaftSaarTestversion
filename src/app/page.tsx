@@ -38,8 +38,8 @@ export default function HomePage() {
       <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-12 py-5 bg-white border-b-[3px] border-black">
         <div className="w-[112px] h-[32px] border border-black" />
         <nav className="hidden md:flex items-center gap-8 text-sm tracking-widest uppercase">
-          <a href="#verzeichnis" className="hover:text-neutral-500">Verzeichnis</a>
-          <a href="#stiftungstag" className="hover:text-neutral-500">Stiftungstag</a>
+          <a href="/verzeichnis" className="hover:text-neutral-500">Verzeichnis</a>
+          <a href="/stiftungstag" className="hover:text-neutral-500">Stiftungstag</a>
           <a href="/termine" className="hover:text-neutral-500">Termine</a>
           <a href="#austausch" className="hover:text-neutral-500">Austausch</a>
           <a href="/ueber-uns" className="hover:text-neutral-500">Über uns</a>
