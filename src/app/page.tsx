@@ -60,8 +60,10 @@ export default function HomePage() {
           <a href="#about">Über uns</a>
           <a href="#verzeichnis">Verzeichnis</a>
           <a href="#stiftungstag">Stiftungstag</a>
+          <a href="/termine">Termine</a>            {/* 🔹 neu */}
           <a href="#austausch">Austausch</a>
           <a href="#kontakt">Kontakt</a>
+          <a href="/rechtliches">Rechtliches</a>    {/* 🔹 neu */}
         </nav>
       </header>
 
@@ -126,105 +128,4 @@ export default function HomePage() {
       <Divider />
 
       {/* MARQUEE */}
-      <section style={{ position: "relative", background: "#fff", overflow: "hidden" }}>
-        <div style={{ whiteSpace: "nowrap", padding: "24px 0", color: "#222" }}>
-          <div style={{ display: "flex", animation: "marquee 24s linear infinite" }}>
-            {[...categories, ...categories].map((cat, i) => (
-              <span key={i} style={{ margin: "0 40px" }}>{cat}</span>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <Divider />
-
-      {/* VERZEICHNIS (Platzhalter links, Text rechts) */}
-      <section id="verzeichnis" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", minHeight: "70vh" }}>
-        {/* Platzhalter links */}
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", borderRight: "3px solid #000" }}>
-          <div style={{ width: "75%", height: "75%", border: "3px solid #000" }} />
-        </div>
-
-        {/* Text rechts */}
-        <div style={{ display: "flex", alignItems: "center", padding: "96px 24px" }}>
-          <div>
-            <h3 style={{ fontSize: 48, fontWeight: 600, lineHeight: 1.1 }}>Alle Stiftungen auf einen Blick.</h3>
-            <p style={{ marginTop: 24, maxWidth: 600, color: "#555", fontSize: 18 }}>
-              Alphabetisch und thematisch filterbar – schnell auffindbar nach Bereichen wie Bildung, Kultur, Soziales, Umwelt und mehr.
-              Klein oder groß: jede Stiftung ist sichtbar.
-            </p>
-            <div style={{ marginTop: 32, display: "flex", gap: 16 }}>
-              <a href="/verzeichnis" style={{ padding: "12px 24px", border: "1px solid #000", background: "#000", color: "#fff", textDecoration: "none" }}>
-                Zum Verzeichnis
-              </a>
-              <a href="#stiftungstag" style={{ padding: "12px 24px", border: "1px solid #000", color: "#000", textDecoration: "none" }}>
-                Stiftungstag
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <Divider />
-
-      {/* STIFTUNGSTAG */}
-      <section id="stiftungstag" style={{ position: "relative", height: "90vh", display: "flex", alignItems: "center" }}>
-        <div style={{ padding: "0 24px" }}>
-          <h3 style={{ fontSize: 56, fontWeight: 800, lineHeight: 0.95 }}>
-            Stiftungstag <span style={{ textDecoration: "underline" }}>Saar</span>
-          </h3>
-          <p style={{ marginTop: 24, maxWidth: 800, color: "#555", fontSize: 18 }}>
-            Termine, Inhalte, Archiv. Konzentriert auf einer Seite. Klar strukturiert, barrierefrei, mobil erstklassig. Die Bühne für Austausch und Impulse.
-          </p>
-          <div style={{ marginTop: 32 }}>
-            <Button className="rounded-none border border-black bg-black text-white hover:bg-white hover:text-black">Programm ansehen</Button>
-          </div>
-        </div>
-      </section>
-
-      <Divider />
-
-      {/* AUSTAUSCH */}
-      <section id="austausch" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", minHeight: "70vh" }}>
-        <div style={{ display: "flex", alignItems: "center", padding: "96px 24px" }}>
-          <div>
-            <h3 style={{ fontSize: 48, fontWeight: 600, lineHeight: 1.1 }}>Austausch & Vernetzung</h3>
-            <p style={{ marginTop: 24, maxWidth: 600, color: "#555", fontSize: 18 }}>
-              Ein moderierter, datenschutzkonformer Raum für Bottom-up-Themen. Alternativ: dedizierte LinkedIn-Gruppen – sichtbar integriert und leicht zugänglich.
-            </p>
-            <div style={{ marginTop: 32, display: "flex", gap: 16 }}>
-              <Button className="bg-black hover:bg-neutral-800 rounded-none text-white border border-black">Zur Plattform</Button>
-              <Button variant="outline" className="rounded-none border border-black hover:bg-black hover:text-white">LinkedIn-Gruppen</Button>
-            </div>
-          </div>
-        </div>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", borderLeft: "3px solid #000" }}>
-          <div style={{ width: "75%", height: "75%", border: "3px solid #000" }} />
-        </div>
-      </section>
-
-      <Divider />
-
-      {/* FOOTER */}
-      <footer id="kontakt" style={{ position: "relative" }}>
-        <div style={{ padding: "48px 24px", display: "grid", gridTemplateColumns: "1fr 1fr", alignItems: "end" }}>
-          <div>
-            <div style={{ width: 112, height: 32, border: "1px solid #000", marginBottom: 16 }} />
-            <p style={{ color: "#555", fontSize: 14 }}>© 2025 StiftungsForumSaar</p>
-          </div>
-          <div style={{ textAlign: "right", color: "#555", fontSize: 14 }}>
-            Musterstraße 1, 66119 Saarbrücken · info@stiftungsforumsaar.de
-          </div>
-        </div>
-      </footer>
-
-      {/* Keyframes */}
-      <style jsx global>{`
-        @keyframes marquee {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-      `}</style>
-    </main>
-  );
-}
+      <section style={{ po
