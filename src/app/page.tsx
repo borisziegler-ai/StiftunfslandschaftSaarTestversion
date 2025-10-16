@@ -37,14 +37,50 @@ export default function HomePage() {
       {/* HEADER */}
       <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-12 py-5 bg-white border-b-[3px] border-black">
         <div className="w-[112px] h-[32px] border border-black" />
+
+        {/* NAV */}
         <nav className="hidden md:flex items-center gap-8 text-sm tracking-widest uppercase">
-          <a href="/verzeichnis" className="hover:text-neutral-500">Verzeichnis</a>
-          <a href="/termine" className="hover:text-neutral-500">Termine</a>
-          <a href="/stiftungstag" className="hover:text-neutral-500">Stiftungstag</a>
-          <a href="#austausch" className="hover:text-neutral-500">Austausch</a>
-          <a href="/rechtliches" className="hover:text-neutral-500">Stiftungsrecht</a>
-          <a href="/stiftung-gruenden" className="hover:text-neutral-500">Stiftung gründen</a>
-          <a href="#kontakt" className="hover:text-neutral-500">Kontakt</a>
+          <Link href="/verzeichnis" className="hover:text-neutral-500">Verzeichnis</Link>
+          <Link href="/termine" className="hover:text-neutral-500">Termine</Link>
+          <Link href="/stiftungstag" className="hover:text-neutral-500">Stiftungstag</Link>
+          <Link href="#austausch" className="hover:text-neutral-500">Austausch</Link>
+
+          {/* Stiftungsrecht mit Untermenü */}
+          <div className="relative group">
+            <Link
+              href="/rechtliches"
+              className="hover:text-neutral-500 inline-block"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              Stiftungsrecht
+            </Link>
+
+            {/* Dropdown */}
+            <div
+              className="absolute left-0 mt-2 hidden group-hover:block group-focus-within:block bg-white border border-black"
+              role="menu"
+              aria-label="Untermenü Stiftungsrecht"
+            >
+              <Link
+                href="/rechtliches"
+                className="block px-4 py-2 hover:bg-black hover:text-white whitespace-nowrap"
+                role="menuitem"
+              >
+                Stiftungsrecht (Übersicht)
+              </Link>
+              <Link
+                href="/stiftung-gruenden"
+                className="block px-4 py-2 hover:bg-black hover:text-white whitespace-nowrap"
+                role="menuitem"
+              >
+                Stiftung gründen
+              </Link>
+            </div>
+          </div>
+
+          {/* Entfernt: <Link href="/stiftung-gruenden">Stiftung gründen</Link> */}
+          <Link href="#kontakt" className="hover:text-neutral-500">Kontakt</Link>
         </nav>
       </header>
 
@@ -52,11 +88,7 @@ export default function HomePage() {
       <div className="h-20" />
 
       {/* HERO */}
-      <section
-        ref={heroRef}
-        className="relative h-screen flex items-end md:items-center overflow-hidden"
-      >
-        {/* Hintergrund-Wappen sicher einkapseln */}
+      <section ref={heroRef} className="relative h-screen flex items-end md:items-center overflow-hidden">
         <div className="absolute inset-0 opacity-10 pointer-events-none select-none overflow-hidden">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -65,9 +97,7 @@ export default function HomePage() {
             fill="white"
             stroke="black"
             strokeWidth="30"
-          >
-            {/* optional SVG */}
-          </svg>
+          />
         </div>
 
         <motion.div style={{ scale: scaleHero }} className="absolute inset-0" />
@@ -79,11 +109,16 @@ export default function HomePage() {
             Saarländische<br />Stiftungen
           </motion.h1>
           <div className="mt-6 md:mt-10 max-w-2xl text-neutral-700 text-base md:text-lg">
-            Ein gemeinsamer digitaler Auftritt – klar, schnell, wirksam. Sichtbarkeit für alle Stiftungen. Zugang für die Bürger. Gemeinsam geht mehr.
+            Ein gemeinsamer digitaler Auftritt – klar, schnell, wirksam. Sichtbarkeit für alle Stiftungen.
+            Zugang für die Bürger. Gemeinsam geht mehr.
           </div>
           <div className="mt-8 flex gap-4">
-            <Button className="bg-black text-white hover:bg-neutral-800 rounded-none px-6">Mehr erfahren</Button>
-            <Button variant="outline" className="border border-black text-black hover:bg-black hover:text-white rounded-none px-6">Kontakt</Button>
+            <Button className="bg-black text-white hover:bg-neutral-800 rounded-none px-6">
+              Mehr erfahren
+            </Button>
+            <Button variant="outline" className="border border-black text-black hover:bg-black hover:text-white rounded-none px-6">
+              Kontakt
+            </Button>
           </div>
         </div>
       </section>
@@ -140,9 +175,9 @@ export default function HomePage() {
               <Link href="/verzeichnis" className="px-6 py-3 border border-black bg-black text-white hover:bg-white hover:text-black">
                 Zum Verzeichnis
               </Link>
-              <a href="#stiftungstag" className="px-6 py-3 border border-black hover:bg-black hover:text-white">
+              <Link href="#stiftungstag" className="px-6 py-3 border border-black hover:bg-black hover:text-white">
                 Stiftungstag
-              </a>
+              </Link>
             </div>
           </div>
         </div>
@@ -176,22 +211,27 @@ export default function HomePage() {
 
       <Divider />
 
-      {/* STIFTUNGSRECHT — GROSSER ZWEISPALTER */}
+      {/* STIFTUNGSRECHT */}
       <section className="grid md:grid-cols-2 min-h-[70vh]">
         <div className="flex items-center px-6 md:px-12 py-24">
           <div>
-            <h3 className="text-5xl md:text-6xl font-semibold leading-[1.05]">
-              Stiftungsrecht
-            </h3>
+            <h3 className="text-5xl md:text-6xl font-semibold leading-[1.05]">Stiftungsrecht</h3>
             <p className="mt-6 text-neutral-700 max-w-xl text-lg">
               Tipps, Muster & Updates: von der Satzung bis zu Gesetzesänderungen – kompakt für die Praxis.
             </p>
-            <div className="mt-8">
+            <div className="mt-8 flex gap-3">
               <Link
                 href="/rechtliches"
                 className="inline-block px-6 py-3 border border-black bg-black text-white hover:bg-white hover:text-black"
               >
                 Mehr erfahren
+              </Link>
+              {/* Unterpunkt explizit verlinkt */}
+              <Link
+                href="/stiftung-gruenden"
+                className="inline-block px-6 py-3 border border-black hover:bg-black hover:text-white"
+              >
+                Stiftung gründen
               </Link>
             </div>
           </div>
@@ -203,10 +243,10 @@ export default function HomePage() {
 
       <Divider />
 
-      {/* KLEINE KÄSTEN: Austausch & Vernetzung + StiftungsForum */}
+      {/* AUSTAUSCH + STIFTUNGSFORUM */}
       <section id="austausch" className="px-6 md:px-12 py-16">
         <div className="grid md:grid-cols-2 gap-6">
-          {/* Austausch & Vernetzung KLEIN */}
+          {/* Austausch & Vernetzung */}
           <div className="border-[3px] border-black p-6">
             <h4 className="text-2xl md:text-3xl font-semibold">Austausch & Vernetzung</h4>
             <p className="mt-3 text-neutral-700">
@@ -225,7 +265,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* StiftungsForum (statt „Über uns“) */}
+          {/* StiftungsForum */}
           <div className="border-[3px] border-black p-6">
             <h4 className="text-2xl md:text-3xl font-semibold">StiftungsForum</h4>
             <p className="mt-3 text-neutral-700">
@@ -245,7 +285,7 @@ export default function HomePage() {
 
       <Divider />
 
-      {/* STIFTUNG GRÜNDEN – TEASER */}
+      {/* STIFTUNG GRÜNDEN – (optional separater Block: belassen oder entfernen) */}
       <section className="px-6 md:px-12 py-8">
         <div className="border-[3px] border-black p-6 max-w-4xl">
           <h4 className="text-2xl md:text-3xl font-semibold">Stiftung gründen</h4>
@@ -265,7 +305,7 @@ export default function HomePage() {
 
       <Divider />
 
-      {/* Kontakt-CTA */}
+      {/* KONTAKT */}
       <section className="px-6 md:px-12 py-10">
         <p className="text-center text-neutral-700">
           <span className="font-medium">Sie haben Fragen?</span> Wir sind jederzeit für Sie da.
@@ -292,8 +332,8 @@ export default function HomePage() {
 
       <Divider />
 
-      {/* FOOTER (Schluss – nichts mehr darunter) */}
-      <footer id="kontakt" className="relative">
+      {/* FOOTER */}
+      <footer id="kontakt" className="relative border-t-[3px] border-black">
         <div className="px-6 md:px-12 py-12 grid md:grid-cols-2 gap-6 items-end">
           <div>
             <div className="w-[112px] h-[32px] border border-black mb-4" />
@@ -308,11 +348,10 @@ export default function HomePage() {
         </div>
       </footer>
 
-      {/* Keyframes */}
       <style jsx global>{`
         @keyframes marquee {
           0% { transform: translateX(0); }
-        100% { transform: translateX(-50%); }
+          100% { transform: translateX(-50%); }
         }
       `}</style>
     </main>
