@@ -44,36 +44,7 @@ export default function HomePage() {
           <Link href="/termine" className="hover:text-neutral-500">Termine</Link>
           <Link href="/stiftungstag" className="hover:text-neutral-500">Stiftungstag</Link>
           <Link href="#austausch" className="hover:text-neutral-500">Austausch</Link>
-
-          {/* Stiftungsrecht mit Untermenü */}
-          <div className="relative group">
-            <Link
-              href="/rechtliches"
-              className="hover:text-neutral-500 inline-block"
-              aria-haspopup="true"
-              aria-expanded="false"
-            >
-              Stiftungsrecht
-            </Link>
-
-            {/* Dropdown */}
-            <div
-              className="absolute left-0 mt-2 hidden group-hover:block group-focus-within:block bg-white border border-black"
-              role="menu"
-              aria-label="Untermenü Stiftungsrecht"
-            >
-              <Link
-                href="/rechtliches"
-                className="block px-4 py-2 hover:bg-black hover:text-white whitespace-nowrap"
-                role="menuitem"
-              >
-                Stiftungsrecht (Übersicht)
-              </Link>
-              {/* Entfernt: Link zu /stiftung-gruenden */}
-            </div>
-          </div>
-
-          {/* Entfernt: <Link href="/stiftung-gruenden">Stiftung gründen</Link> */}
+          <Link href="/rechtliches" className="hover:text-neutral-500">Stiftungsrecht</Link>
           <Link href="#kontakt" className="hover:text-neutral-500">Kontakt</Link>
         </nav>
       </header>
@@ -119,7 +90,7 @@ export default function HomePage() {
 
       <Divider />
 
-      {/* ÜBER UNS KURZ */}
+      {/* ÜBER UNS */}
       <section id="about" className="grid md:grid-cols-2 min-h-[80vh]">
         <div className="flex items-center px-6 md:px-12 py-16">
           <div>
@@ -213,19 +184,12 @@ export default function HomePage() {
             <p className="mt-6 text-neutral-700 max-w-xl text-lg">
               Tipps, Muster & Updates: von der Satzung bis zu Gesetzesänderungen – kompakt für die Praxis.
             </p>
-            <div className="mt-8 flex gap-3">
+            <div className="mt-8">
               <Link
                 href="/rechtliches"
                 className="inline-block px-6 py-3 border border-black bg-black text-white hover:bg-white hover:text-black"
               >
                 Mehr erfahren
-              </Link>
-              {/* Unterpunkt explizit verlinkt */}
-              <Link
-                href="/stiftung-gruenden"
-                className="inline-block px-6 py-3 border border-black hover:bg-black hover:text-white"
-              >
-                Stiftung gründen
               </Link>
             </div>
           </div>
@@ -240,7 +204,6 @@ export default function HomePage() {
       {/* AUSTAUSCH + STIFTUNGSFORUM */}
       <section id="austausch" className="px-6 md:px-12 py-16">
         <div className="grid md:grid-cols-2 gap-6">
-          {/* Austausch & Vernetzung */}
           <div className="border-[3px] border-black p-6">
             <h4 className="text-2xl md:text-3xl font-semibold">Austausch & Vernetzung</h4>
             <p className="mt-3 text-neutral-700">
@@ -259,7 +222,6 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* StiftungsForum */}
           <div className="border-[3px] border-black p-6">
             <h4 className="text-2xl md:text-3xl font-semibold">StiftungsForum</h4>
             <p className="mt-3 text-neutral-700">
@@ -273,26 +235,6 @@ export default function HomePage() {
                 Team & Geschichte
               </Link>
             </div>
-          </div>
-        </div>
-      </section>
-
-      <Divider />
-
-      {/* STIFTUNG GRÜNDEN – (optional separater Block: belassen oder entfernen) */}
-      <section className="px-6 md:px-12 py-8">
-        <div className="border-[3px] border-black p-6 max-w-4xl">
-          <h4 className="text-2xl md:text-3xl font-semibold">Stiftung gründen</h4>
-          <p className="mt-3 text-neutral-700">
-            Von der Idee bis zur Anerkennung: Satzung, Kapital, Zweck – kompakt erklärt.
-          </p>
-          <div className="mt-6">
-            <Link
-              href="/stiftung-gruenden"
-              className="inline-block px-5 py-3 border-2 border-black bg-black text-white hover:bg-white hover:text-black"
-            >
-              Zur Gründungsseite
-            </Link>
           </div>
         </div>
       </section>
