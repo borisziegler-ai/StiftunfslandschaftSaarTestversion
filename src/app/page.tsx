@@ -69,13 +69,7 @@ export default function HomePage() {
               >
                 Stiftungsrecht (Übersicht)
               </Link>
-              <Link
-                href="/stiftung-gruenden"
-                className="block px-4 py-2 hover:bg-black hover:text-white whitespace-nowrap"
-                role="menuitem"
-              >
-                Stiftung gründen
-              </Link>
+              {/* Entfernt: Link zu /stiftung-gruenden */}
             </div>
           </div>
 
